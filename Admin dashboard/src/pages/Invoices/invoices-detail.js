@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useFormik, FormikProvider, FieldArray } from "formik";
+import * as Yup from "yup";
 import {
   Card,
   CardBody,
@@ -20,6 +21,12 @@ import SequenceSection from "./SequenceSection";
 import ClassifySentenceSection from "./ClassifySentenceSection";
 import WordSearchSection from "./WordSearchSection";
 import Swal from "sweetalert2";
+import MatchPairSection from "./MatchPairSection";
+import SelectWordSection from "./SelectWordSection";
+import RightOneSection from "./RightOneSection";
+import FillUpSection from "./FillUpSection";
+import GroupSection from "./GroupSection";
+import CompletePuzzleSection from "./CompletePuzzleSection";
 
 // HELPERS
 import { get, post } from "../../helpers/api_helper";
@@ -41,6 +48,19 @@ function InvoicesDetail() {
 
   const [cards, setCards] = useState([]);
   const [loadingCards, setLoadingCards] = useState(true);
+  const validationSchema = Yup.object().shape({
+    // Metadata fields
+    grade: Yup.string().required("Grade is required"),
+    language: Yup.string().required("Language is required"),
+    curriculum: Yup.string().required("Curriculum is required"),
+    chapter_name: Yup.string().required("Chapter Name is required"),
+
+    // Configuration fields
+    card_id: Yup.string().required("Please select a Card/Topic"),
+    type: Yup.string().required("Activity Type is required"),
+    label: Yup.string().required("Activity Label is required"),
+    title: Yup.string().required("Instruction Title is required"),
+  });
 
   // Fetch Topics/Cards
   useEffect(() => {
@@ -65,38 +85,69 @@ function InvoicesDetail() {
 
   const validation = useFormik({
     enableReinitialize: true,
+    validationSchema: validationSchema,
     initialValues: {
+      // New Metadata Fields
+      grade: editData?.grade || "",
+      language: editData?.language || "",
+      curriculum: editData?.curriculum || "",
+      chapter_name: editData?.chapter_name || "",
+
+      // for configuration
       id: editData?.id || null,
       card_id: editData?.card_id || "",
       label: editData?.label || "",
-      type: editData?.activity_type || editData?.type || "", // Support both naming conventions
+      type: editData?.activity_type || editData?.type || "",
       btn_label: editData?.btn_label || "Fill Up by Drag",
       title: "",
-
-      // Activity Specific Structures
-      questions: [{ text: "", answer: "" }], // Shared by Match and Classify
-      options: ["", ""],
       lang: "hi",
 
-      // complete word specific
-      completeWords: [
+      options: [],
+
+      // --- SHARED & MCQ / CLASSIFY ---
+      questions: [
         {
-          word: "",
           question: "",
-          correct: "",
+          answers: ["", "", "", ""],
+          correct_answer: "0",
+          text: "", // Ensure 'text' and 'answer' exist for Match type
+          answer: "",
+          word: "",
           options: ["", ""],
         },
       ],
 
-      // WordSearch specific
+      // --- WORD SEARCH SPECIFIC ---
       wordList: [""],
       generatedTable: [],
       generatedWords: [],
       rows: 8,
       cols: 8,
 
-      // Sequence specific
-      sequenceText: "",
+      // --- COMPLETE WORD SPECIFIC ---
+      completeWords: [{ question: "", correct: "", options: ["", ""] }],
+
+      // --- SEQUENCE SPECIFIC ---
+      sequenceSubtype: "character",
+      sequenceItems: [{ text: "" }],
+
+      // -- MATCHPAIRS SPECIFIC ---
+      matchPairs: [{ left: "", right: "" }],
+
+      // -- SELECTWORD SPECIFIC ---
+      selectWordQuestions: [{ sentence: "", answer: "" }],
+
+      // -- RIGHTONE SPECIFIC ---
+      rightOnePairs: [{ correct: "", wrong: "" }],
+
+      // -- FILLUP  SPECIFIC ---
+      fillUpQuestions: [{ sentence: "", right: "", wrong: "" }],
+
+      // -- GROUP EXERCISE SPECIFIC ---
+      groupData: [{ name: "", text: "" }],
+
+      // -- COMPLETE PUZZLE SPECIFIC ---
+      puzzlePairs: [{ base: "", right: "", wrong: "" }],
     },
 
     onSubmit: async (values) => {
@@ -104,6 +155,16 @@ function InvoicesDetail() {
 
       const type = values.type?.trim().toLowerCase();
       let apiPayload = null;
+
+      const basePayload = {
+        activity_id: isEdit ? values.id : null,
+        card_id: Number(values.card_id),
+        label: values.label,
+        grade: values.grade,
+        language: values.language,
+        curriculum: values.curriculum,
+        chapter_name: values.chapter_name,
+      };
 
       try {
         switch (type) {
@@ -137,6 +198,7 @@ function InvoicesDetail() {
               type: "matchByDragDrop", // Backend identifier
               btn_label: values.btn_label,
               data_json: JSON.stringify(data_json),
+              //adding more fields
             };
             break;
           }
@@ -157,6 +219,7 @@ function InvoicesDetail() {
             };
 
             apiPayload = {
+              ...basePayload,
               activity_id: isEdit ? values.id : null,
               card_id: Number(values.card_id),
               label: values.label,
@@ -168,7 +231,28 @@ function InvoicesDetail() {
           }
 
           case "completeword": {
+            // Transform the array of objects into the pipe-delimited string
+            const formattedText = values.completeWords
+              .filter(
+                (q) => q.question.trim() !== "" && q.correct.trim() !== "",
+              )
+              .map((q) => {
+                const question = q.question.trim();
+                const correct = q.correct.trim();
+                const options = q.options
+                  .filter((opt) => opt.trim() !== "")
+                  .join(",");
+
+                // Since 'word' was removed from UI, we use 'correct' + 'remainder of question'
+                // to recreate the full word for the first segment, or just use the correct char.
+                const fullWord = question.replace("_", correct);
+
+                return `${fullWord}|${correct}|${question}|${options}`;
+              })
+              .join("\n");
+
             apiPayload = {
+              ...basePayload,
               activity_id: isEdit ? values.id : null,
               card_id: Number(values.card_id),
               label: values.label,
@@ -176,15 +260,30 @@ function InvoicesDetail() {
               btn_label: "Find the Word",
               data_json: JSON.stringify({
                 title: values.title,
-                lang: values.lang,
-                completeWords: values.completeWords,
+                lang: values.lang || "hi",
+                text: formattedText, // The pipe-delimited string goes here
+                images: "stockImgs", // Matching your required format
               }),
             };
             break;
           }
 
           case "sequence": {
+            const formattedText = values.sequenceItems
+              .filter((item) => item.text.trim() !== "")
+              .map((item) => {
+                if (values.sequenceSubtype === "character") {
+                  const charClusterRegex = /[\u0900-\u097F][\u093E-\u094D]*/g;
+                  const clusters =
+                    item.text.trim().match(charClusterRegex) || [];
+                  return clusters.join(" ");
+                }
+                return item.text.trim();
+              })
+              .join(values.sequenceSubtype === "character" ? "\n" : "\n\n");
+
             apiPayload = {
+              ...basePayload,
               activity_id: isEdit ? values.id : null,
               card_id: Number(values.card_id),
               label: values.label,
@@ -192,8 +291,8 @@ function InvoicesDetail() {
               btn_label: "Jumbled",
               data_json: JSON.stringify({
                 title: values.title,
-                lang: values.lang,
-                text: values.sequenceText,
+                lang: values.lang || "hi",
+                text: formattedText,
               }),
             };
             break;
@@ -212,6 +311,7 @@ function InvoicesDetail() {
               .join("\n");
 
             apiPayload = {
+              ...basePayload,
               activity_id: isEdit ? values.id : null,
               card_id: Number(values.card_id),
               label: values.label,
@@ -227,6 +327,7 @@ function InvoicesDetail() {
 
           case "wordsearch": {
             apiPayload = {
+              ...basePayload,
               activity_id: isEdit ? values.id : null,
               card_id: Number(values.card_id),
               label: values.label,
@@ -238,6 +339,171 @@ function InvoicesDetail() {
                 table: values.generatedTable,
                 lang: "en",
                 showWords: true,
+              }),
+            };
+            break;
+          }
+
+          case "matchpair": {
+            const formattedText = values.matchPairs
+              .filter((p) => p.left.trim() !== "" && p.right.trim() !== "")
+              .map((p) => `${p.left.trim()}, ${p.right.trim()}`)
+              .join("\n");
+
+            apiPayload = {
+              ...basePayload,
+              activity_id: isEdit ? values.id : null,
+              card_id: Number(values.card_id),
+              label: values.label,
+              type: "match",
+              btn_label: "Match",
+              data_json: JSON.stringify({
+                title: values.title,
+                text: formattedText,
+              }),
+            };
+            break;
+          }
+
+          // case "selectword": {
+          //   const formattedText = values.selectWordQuestions
+          //     .filter(
+          //       (q) =>
+          //         q.sentence &&
+          //         q.answer &&
+          //         q.sentence.trim() !== "" &&
+          //         q.answer.trim() !== "",
+          //     )
+          //     .map((q) => {
+          //       const sentence = q.sentence.trim();
+          //       const answer = q.answer.trim();
+
+          //       // Ensure the answer actually exists in the sentence before replacing
+          //       if (sentence.includes(answer)) {
+          //         return sentence.replace(answer, `*${answer}*`);
+          //       }
+          //       // If user provided an answer not in the sentence, just return the sentence
+          //       return sentence;
+          //     })
+          //     .join("\n");
+
+          //   apiPayload = {
+          //     ...basePayload,
+          //     type: "selectWord",
+          //     btn_label: "Select Word",
+          //     data_json: JSON.stringify({
+          //       title: values.title,
+          //       text: formattedText,
+          //     }),
+          //   };
+          //   break;
+          // }
+
+          case "selectword": {
+            const formattedText = values.selectWordQuestions
+              .filter((q) => q.sentence.trim() !== "" && q.answer.trim() !== "")
+              .map((q) => {
+                const sentence = q.sentence.trim();
+                const answer = q.answer.trim();
+                // Wraps the answer in asterisks within the sentence
+                return sentence.includes(answer)
+                  ? sentence.replace(answer, `*${answer}*`)
+                  : sentence;
+              })
+              .join("\n");
+
+            apiPayload = {
+              ...basePayload,
+              type: "selectWord",
+              btn_label: "Select Word",
+              data_json: JSON.stringify({
+                title: values.title,
+                text: formattedText,
+              }),
+            };
+            break;
+          }
+
+          case "rightone": {
+            const formattedText = values.rightOnePairs
+              .filter((p) => p.correct.trim() !== "" && p.wrong.trim() !== "")
+              .map((p) => `${p.correct.trim()},${p.wrong.trim()}`)
+              .join("\n");
+
+            apiPayload = {
+              ...basePayload,
+              type: "rightOne",
+              btn_label: "Right Option",
+              data_json: JSON.stringify({
+                title: values.title,
+                text: formattedText,
+              }),
+            };
+            break;
+          }
+
+          case "fillup": {
+            const formattedText = values.fillUpQuestions
+              .filter((q) => q.sentence.trim() !== "" && q.right.trim() !== "")
+              .map((q) => {
+                const { sentence, right, wrong } = q;
+                const placeholder = `*${right.trim()} (${wrong.trim()})*`;
+                if (sentence.includes("___")) {
+                  return sentence.replace("___", placeholder);
+                }
+                return sentence + " " + placeholder;
+              })
+              .join("\n\n");
+
+            apiPayload = {
+              ...basePayload,
+              type: "fillup",
+              btn_label: "Fill Up",
+              data_json: JSON.stringify({
+                title: values.title,
+                text: formattedText,
+                type: "variableOptions",
+                lang: "hi",
+              }),
+            };
+            break;
+          }
+
+          case "group": {
+            apiPayload = {
+              ...basePayload,
+              type: "group",
+              btn_label: "Group",
+              data_json: JSON.stringify({
+                title: values.title,
+                types: values.groupData.map((g) => ({
+                  name: g.name.trim(),
+                  text: g.text.trim(),
+                })),
+              }),
+            };
+            break;
+          }
+
+          case "completepuzzle": {
+            const formattedText = values.puzzlePairs
+              .filter((p) => p.base.trim() !== "" && p.right.trim() !== "")
+              .map(
+                (p) => `${p.base.trim()}, ${p.right.trim()}, ${p.wrong.trim()}`,
+              )
+              .join("\n");
+
+            apiPayload = {
+              ...basePayload,
+              type: "completePuzzle", // Matches your JSON type
+              btn_label: "Join the Words",
+              data_json: JSON.stringify({
+                title: values.title,
+                text: formattedText,
+                leftWidth: 150,
+                rightWidth: 150,
+                type: "rightOpen",
+                printTitle: "Underline the right option.",
               }),
             };
             break;
@@ -263,51 +529,6 @@ function InvoicesDetail() {
       }
     },
   });
-
-  // Handle Loading existing data for Edit mode
-
-  // useEffect(() => {
-  //   if (isEdit && editData) {
-  //     let parsedData = {};
-  //     try {
-  //       parsedData =
-  //         typeof editData.data_json === "string"
-  //           ? JSON.parse(editData.data_json)
-  //           : editData.data_json;
-  //     } catch (e) {
-  //       console.error("Parse error", e);
-  //     }
-
-  //     if (parsedData && parsedData.text) {
-
-  //       // Specifically for MatchBy: Convert "*word*" string back into UI array
-  //       const lines = parsedData.text
-  //         .split("\n")
-  //         .filter((l) => l.trim() !== "");
-  //       const reconstructedQuestions = lines.map((line) => {
-  //         const match = line.match(/(.*)\s*\*(.*)\*/);
-  //         return {
-  //           text: match ? match[1].trim() : line,
-  //           answer: match ? match[2].trim() : "",
-  //         };
-  //       });
-
-  //       validation.setValues({
-  //         ...validation.initialValues, // Reset to base
-  //         id: editData.id,
-  //         label: editData.label || "",
-  //         btn_label: editData.btn_label || "Fill Up by Drag",
-  //         type: editData.activity_type || "match",
-  //         title: parsedData.title || "",
-  //         questions:
-  //           reconstructedQuestions.length > 0
-  //             ? reconstructedQuestions
-  //             : [{ text: "", answer: "" }],
-  //         card_id: editData.card_id || "",
-  //       });
-  //     }
-  //   }
-  // }, [editData]);
 
   useEffect(() => {
     if (isEdit && editData) {
@@ -339,20 +560,132 @@ function InvoicesDetail() {
           });
         }
 
-        // 2. Set Values for ALL types to prevent "undefined" errors
+        // Inside useEffect for editData reconstruction
+        if (parsedData && activityType === "sequence" && parsedData.text) {
+          const rawText = parsedData.text;
+          const isWordSequence = rawText.includes("\n\n");
+          const lines = rawText
+            .split(isWordSequence ? "\n\n" : "\n")
+            .filter((l) => l.trim() !== "");
+
+          const reconstructedItems = lines.map((line) => ({
+            // For character type, remove the spaces used for blocks to show the clean word in the input
+            text: !isWordSequence ? line.replace(/\s+/g, "") : line,
+          }));
+
+          validation.setFieldValue(
+            "sequenceSubtype",
+            isWordSequence ? "word" : "character",
+          );
+          validation.setFieldValue("sequenceItems", reconstructedItems);
+        }
+
+        if (parsedData && activityType === "completeword" && parsedData.text) {
+          const lines = parsedData.text
+            .split("\n")
+            .filter((l) => l.trim() !== "");
+          const reconstructedCompleteWords = lines.map((line) => {
+            const [word, correct, question, optionsStr] = line.split("|");
+            return {
+              question: question || "",
+              correct: correct || "",
+              options: optionsStr ? optionsStr.split(",") : ["", ""],
+            };
+          });
+
+          validation.setFieldValue("completeWords", reconstructedCompleteWords);
+        }
+
+        if (activityType === "match" && parsedData.text) {
+          if (parsedData.text.includes(",")) {
+            const lines = parsedData.text
+              .split("\n")
+              .filter((l) => l.trim() !== "");
+            const reconstructedPairs = lines.map((line) => {
+              const [left, right] = line.split(",");
+              return { left: left?.trim() || "", right: right?.trim() || "" };
+            });
+            validation.setFieldValue("matchPairs", reconstructedPairs);
+          }
+        }
+
+        if (parsedData && activityType === "selectWord" && parsedData.text) {
+          const lines = parsedData.text
+            .split("\n")
+            .filter((l) => l.trim() !== "");
+          const reconstructed = lines.map((line) => {
+            const match = line.match(/\*(.*?)\*/);
+            return {
+              sentence: line.replace(/\*/g, ""),
+              answer: match ? match[1] : "",
+            };
+          });
+          validation.setFieldValue("selectWordQuestions", reconstructed);
+        }
+
+        if (parsedData && activityType === "rightOne" && parsedData.text) {
+          const lines = parsedData.text
+            .split("\n")
+            .filter((l) => l.trim() !== "");
+          const reconstructed = lines.map((line) => {
+            const [correct, wrong] = line.split(",");
+            return {
+              correct: correct || "",
+              wrong: wrong || "",
+            };
+          });
+          validation.setFieldValue("rightOnePairs", reconstructed);
+        }
+
+        if (parsedData && activityType === "fillup" && parsedData.text) {
+          const lines = parsedData.text
+            .split("\n\n")
+            .filter((l) => l.trim() !== "");
+          const reconstructed = lines.map((line) => {
+            const match = line.match(/\*(.*?) \((.*?)\)\*/);
+            return {
+              sentence: line.replace(/\*.*?\*/, "___"),
+              right: match ? match[1] : "",
+              wrong: match ? match[2] : "",
+            };
+          });
+          validation.setFieldValue("fillUpQuestions", reconstructed);
+        }
+
+        if (parsedData && activityType === "group" && parsedData.types) {
+          validation.setFieldValue("groupData", parsedData.types);
+        }
+
+        if (
+          parsedData &&
+          activityType === "completePuzzle" &&
+          parsedData.text
+        ) {
+          const lines = parsedData.text
+            .split("\n")
+            .filter((l) => l.trim() !== "");
+          const reconstructed = lines.map((line) => {
+            const parts = line.split(",").map((s) => s.trim());
+            return {
+              base: parts[0] || "",
+              right: parts[1] || "",
+              wrong: parts[2] || "",
+            };
+          });
+          validation.setFieldValue("puzzlePairs", reconstructed);
+        }
+
         validation.setValues({
-          ...validation.initialValues, // Ensures completeWords: [{...}] exists
+          ...validation.initialValues,
           id: editData.id,
           label: editData.label || "",
           btn_label: editData.btn_label || "Fill Up by Drag",
           type: activityType,
           card_id: editData.card_id || "",
           title: parsedData.title || "",
-
-          // Populate specific fields if they exist in the DB
           questions: reconstructedMatch,
           completeWords: parsedData.completeWords || [
-            { word: "", question: "", correct: "", options: ["", ""] },
+            { question: "", correct: "", options: ["", ""] },
           ],
           sequenceText:
             parsedData.text && activityType === "sequence"
@@ -382,6 +715,8 @@ function InvoicesDetail() {
       <FormikProvider value={validation}>
         <Form onSubmit={validation.handleSubmit}>
           {/* Section 1: Configuration */}
+
+          {/* Section 0: General Information */}
           <Card className="mb-3">
             <CardBody
               style={{
@@ -389,9 +724,65 @@ function InvoicesDetail() {
                 opacity: isViewOnly ? 0.9 : 1,
               }}
             >
-              <h5 className="card-title mb-4">1. Configuration</h5>
+              <h5 className="card-title mb-4">1. General Information</h5>
               <Row>
                 <Col md={4}>
+                  <Label>Grade</Label>
+                  <Input
+                    type="text"
+                    list="grade-options"
+                    placeholder="Select or Type Grade"
+                    style={commonInputStyle}
+                    {...validation.getFieldProps("grade")}
+                  />
+                  <datalist id="grade-options">
+                    {/* You can map through unique grades from your 'cards' state here */}
+                    <option value="Grade 1" />
+                    <option value="Grade 2" />
+                  </datalist>
+                </Col>
+                <Col md={4}>
+                  <Label>Language</Label>
+                  <Input
+                    type="text"
+                    list="lang-options"
+                    placeholder="Select or Type Language"
+                    style={commonInputStyle}
+                    {...validation.getFieldProps("language")}
+                  />
+                  <datalist id="lang-options">
+                    <option value="English" />
+                    <option value="Hindi" />
+                  </datalist>
+                </Col>
+                <Col md={4}>
+                  <Label>Curriculum</Label>
+                  <Input
+                    type="text"
+                    list="curr-options"
+                    placeholder="Select or Type Curriculum"
+                    style={commonInputStyle}
+                    {...validation.getFieldProps("curriculum")}
+                  />
+                  <datalist id="curr-options">
+                    <option value="CBSE" />
+                    <option value="ICSE" />
+                  </datalist>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+
+          <Card className="mb-3">
+            <CardBody
+              style={{
+                pointerEvents: isViewOnly ? "none" : "auto",
+                opacity: isViewOnly ? 0.9 : 1,
+              }}
+            >
+              <h5 className="card-title mb-4">2. Configuration</h5>
+              <Row>
+                <Col md={3}>
                   <Label>Select Card (Topic)</Label>
                   {loadingCards ? (
                     <Spinner size="sm" color="primary" className="ms-2" />
@@ -410,7 +801,21 @@ function InvoicesDetail() {
                     </Input>
                   )}
                 </Col>
-                <Col md={4}>
+
+                <Col md={3}>
+                  <Label>Chapter Name</Label>
+                  <Input
+                    type="text"
+                    list="chapter-options"
+                    placeholder="Select or Add Chapter"
+                    style={commonInputStyle}
+                    {...validation.getFieldProps("chapter_name")}
+                  />
+                  <datalist id="chapter-options">
+                    {/* Map existing chapters here */}
+                  </datalist>
+                </Col>
+                <Col md={3}>
                   <Label>Activity Type</Label>
                   <Input
                     type="select"
@@ -426,9 +831,17 @@ function InvoicesDetail() {
                       Pick the Right Option
                     </option>
                     <option value="wordsearch">Word Search</option>
+                    <option value="matchpair">Match Pair</option>
+                    <option value="selectword">Select Word</option>
+                    <option value="rightone">
+                      Right One (Choose Correct Word)
+                    </option>
+                    <option value="fillup">Fill Up</option>
+                    <option value="group">Group Sorting </option>
+                    <option value="completepuzzle">Complete Puzzle </option>
                   </Input>
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                   <Label>Activity Label</Label>
                   <Input
                     type="text"
@@ -448,7 +861,7 @@ function InvoicesDetail() {
                 opacity: isViewOnly ? 0.9 : 1,
               }}
             >
-              <h5 className="card-title mb-4">2. Content Data</h5>
+              <h5 className="card-title mb-4">3. Content Data</h5>
               <div className="mb-4">
                 <Label>Instruction Title</Label>
                 <Input
@@ -515,12 +928,12 @@ function InvoicesDetail() {
               {validation.values.type === "sequence" && (
                 <SequenceSection validation={validation} />
               )}
-              {validation.values.type === "wordsearch" && (
+              {/* {validation.values.type === "wordsearch" && (
                 <WordSearchSection
                   values={validation.values}
                   setFieldValue={validation.setFieldValue}
                 />
-              )}
+              )} */}
 
               {validation.values.type === "classifysentence" && (
                 <FieldArray name="questions">
@@ -569,6 +982,37 @@ function InvoicesDetail() {
                     </>
                   )}
                 </FieldArray>
+              )}
+
+              {validation.values.type === "wordsearch" && (
+                <WordSearchSection
+                  values={validation.values}
+                  setFieldValue={validation.setFieldValue}
+                />
+              )}
+
+              {validation.values.type === "matchpair" && (
+                <MatchPairSection validation={validation} />
+              )}
+
+              {validation.values.type === "selectword" && (
+                <SelectWordSection validation={validation} />
+              )}
+
+              {validation.values.type === "rightone" && (
+                <RightOneSection validation={validation} />
+              )}
+
+              {validation.values.type === "fillup" && (
+                <FillUpSection validation={validation} />
+              )}
+
+              {validation.values.type === "group" && (
+                <GroupSection validation={validation} />
+              )}
+
+              {validation.values.type === "completepuzzle" && (
+                <CompletePuzzleSection validation={validation} />
               )}
 
               {!validation.values.type && (

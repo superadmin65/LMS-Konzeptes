@@ -8,10 +8,18 @@ export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [childName, setChildName] = useState('');
+  const [parentName, setParentName] = useState('');
+  const [profilePic, setProfilePic] = useState('');
   const [showToast, setShowToast] = useState(false);
 
   const dropdownRef = useRef(null);
   const timerRef = useRef(null);
+
+  const displayInitial = (
+    (childName && childName.charAt(0)) ||
+    (parentName && parentName.charAt(0)) ||
+    "?"
+  ).toUpperCase();
 
   const startTimer = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -24,9 +32,17 @@ export default function UserDropdown() {
     if (timerRef.current) clearTimeout(timerRef.current);
   };
 
+  // ---- Initial mount: read from localStorage + outside-click handler ----
   useEffect(() => {
-    const storedName = localStorage.getItem('child_name');
-    if (storedName) setChildName(storedName);
+    if (typeof window !== "undefined") {
+      const storedChild = localStorage.getItem("child_name");
+      const storedParent = localStorage.getItem("parent_name");
+      const storedPic = localStorage.getItem("profile_pic");
+
+      if (storedChild) setChildName(storedChild);
+      if (storedParent) setParentName(storedParent);
+      if (storedPic) setProfilePic(storedPic);
+    }
 
     startTimer();
 
@@ -35,6 +51,7 @@ export default function UserDropdown() {
         setIsOpen(false);
       }
     }
+
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
@@ -43,87 +60,19 @@ export default function UserDropdown() {
     };
   }, []);
 
-  // 1. Trigger the customized SweetAlert popup
-  // const triggerLogout = () => {
-  //   setIsOpen(false);
+  // ---- 🔔 LIVE UPDATE: listen for "profile-updated" event from Profile page ----
+  useEffect(() => {
+    const handleProfileUpdate = (e) => {
+      const d = (e && e.detail) || {};
+      if (typeof d.profile_pic === "string") setProfilePic(d.profile_pic);
+      if (typeof d.child_name === "string")  setChildName(d.child_name);
+      if (typeof d.parent_name === "string") setParentName(d.parent_name);
+    };
 
-  //   Swal.fire({
-  //     showConfirmButton: false,
-  //     showCancelButton: false,
-  //     html: `
-  //       <div style="font-family: 'Quicksand', sans-serif;">
-  //         <div style="display:flex; justify-content:center; margin-bottom: 15px;">
-  //            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#2b7d10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  //               <circle cx="12" cy="12" r="10"></circle>
-  //               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-  //               <line x1="12" y1="17" x2="12.01" y2="17"></line>
-  //            </svg>
-  //         </div>
+    window.addEventListener("profile-updated", handleProfileUpdate);
+    return () => window.removeEventListener("profile-updated", handleProfileUpdate);
+  }, []);
 
-  //         <h3 style="margin:0; font-size:22px; color:#2b7d10; font-weight:700;">Leaving so soon?</h3>
-  //         <p style="font-size:15px; margin: 10px 0 25px 0; color:#555; line-height: 1.4;">Are you sure you want to end your learning adventure for today?</p>
-
-  //         <div style="display:flex; gap: 15px; justify-content: center;">
-  //            <button id="swal-keep-playing" style="
-  //               background-color: white;
-  //               color: #2b7d10;
-  //               border: 2px solid #2b7d10;
-  //               padding: 10px 24px;
-  //               border-radius: 8px;
-  //               font-family: 'Quicksand', sans-serif;
-  //               font-weight: 700;
-  //               font-size: 14px;
-  //               cursor: pointer;
-  //               transition: 0.2s;
-  //               min-width: 140px;
-  //            ">Keep Playing</button>
-
-  //            <button id="swal-yes-logout" style="
-  //               background-color: #2b7d10;
-  //               color: white;
-  //               border: 2px solid #2b7d10;
-  //               padding: 10px 24px;
-  //               border-radius: 8px;
-  //               font-family: 'Quicksand', sans-serif;
-  //               font-weight: 700;
-  //               font-size: 14px;
-  //               cursor: pointer;
-  //               transition: 0.2s;
-  //               min-width: 140px;
-  //            ">Yes, Log Out</button>
-  //         </div>
-  //       </div>
-  //     `,
-  //     width: '420px',
-  //     padding: '30px',
-  //     background: '#ffffff',
-  //     backdrop: 'rgba(0, 0, 0, 0.4)',
-  //     customClass: {
-  //       popup: 'custom-swal-shape',
-  //     },
-  //     didOpen: () => {
-  //       const keepPlayingBtn = document.getElementById('swal-keep-playing');
-  //       const logoutBtn = document.getElementById('swal-yes-logout');
-
-  //       keepPlayingBtn.onmouseover = () =>
-  //         (keepPlayingBtn.style.backgroundColor = '#f0f7ef');
-  //       keepPlayingBtn.onmouseout = () =>
-  //         (keepPlayingBtn.style.backgroundColor = 'white');
-
-  //       logoutBtn.onmouseover = () =>
-  //         (logoutBtn.style.backgroundColor = '#205c0c');
-  //       logoutBtn.onmouseout = () =>
-  //         (logoutBtn.style.backgroundColor = '#2b7d10');
-
-  //       keepPlayingBtn.addEventListener('click', () => Swal.close());
-  //       logoutBtn.addEventListener('click', () => {
-  //         Swal.close();
-  //         executeLogout();
-  //       });
-  //     },
-  //   });
-  // };
-  // 1. Trigger the customized SweetAlert popup
   const triggerLogout = () => {
     setIsOpen(false);
 
@@ -132,8 +81,6 @@ export default function UserDropdown() {
       showCancelButton: false,
       html: `
         <div style="font-family: 'Quicksand', sans-serif; text-align: center; padding: 10px 0;">
-
-
           <div style="width: 70px; height: 70px; border: 3px solid #2b7d10; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
              <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#2b7d10" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -178,13 +125,13 @@ export default function UserDropdown() {
           </div>
         </div>
       `,
-      width: '360px', // Shrunk from 420px
+      width: '360px',
       padding: '20px',
-      background: '#f4f9f4', // Matched login popup background
+      background: '#f4f9f4',
       backdrop: 'rgba(0, 0, 0, 0.7)',
       customClass: {
         popup: 'custom-swal-shape',
-        backdrop: 'custom-blur-backdrop', // Added blur class
+        backdrop: 'custom-blur-backdrop',
       },
       didOpen: () => {
         const keepPlayingBtn = document.getElementById('swal-keep-playing');
@@ -210,25 +157,20 @@ export default function UserDropdown() {
   };
 
   const executeLogout = async () => {
-    // 1. Show the toast immediately
     setShowToast(true);
 
     const email = localStorage.getItem('user_email');
     if (email) {
       try {
-        // 2. Await the API call
         await apiService.logout({ email: email });
       } catch (err) {
         console.error('Logout error:', err);
       }
     }
 
-    // 3. Clear local storage
     localStorage.clear();
 
-    // 4. Redirect much faster! Changed from 2000 to 600
     setTimeout(() => {
-      // window.location.href forces a hard browser redirect/refresh
       window.location.href = '/';
     }, 600);
   };
@@ -237,12 +179,10 @@ export default function UserDropdown() {
     setIsOpen(!isOpen);
   };
 
-  if (!childName) return null;
+  if (!childName && !parentName && !profilePic) return null;
 
   return (
     <>
-      {/* 1. Global CSS for the modal shape */}
-      {/* 1. Global CSS for the modal shape and blur */}
       <style jsx global>{`
         .custom-swal-shape {
           border-radius: 16px !important;
@@ -255,7 +195,6 @@ export default function UserDropdown() {
         }
       `}</style>
 
-      {/* 2. Component CSS (Moved OUTSIDE the div to fix the Next.js compile error) */}
       <style jsx>{`
         .user-nav-wrapper {
           position: fixed;
@@ -309,6 +248,15 @@ export default function UserDropdown() {
           font-weight: 700;
           font-size: 16px;
           flex-shrink: 0;
+          overflow: hidden;
+        }
+
+        .avatar-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 50%;
+          display: block;
         }
 
         .name-and-icon {
@@ -412,7 +360,7 @@ export default function UserDropdown() {
         }
       `}</style>
 
-      {/* --- SMALLER SUCCESS TOASTER --- */}
+      {/* --- SUCCESS TOASTER --- */}
       {showToast && (
         <div
           className="toast-slide"
@@ -450,7 +398,7 @@ export default function UserDropdown() {
         </div>
       )}
 
-      {/* --- EXISTING DROPDOWN CODE --- */}
+      {/* --- DROPDOWN --- */}
       <div
         ref={dropdownRef}
         className="user-nav-wrapper"
@@ -465,12 +413,19 @@ export default function UserDropdown() {
         }}
       >
         <div className="trigger-pill" onClick={handlePillClick}>
+          {/* ✅ Avatar: image if available, else initial */}
           <div className="avatar-circle">
-            {childName.charAt(0).toUpperCase()}
+            {profilePic ? (
+              <img src={profilePic} alt="avatar" className="avatar-img" />
+            ) : (
+              displayInitial
+            )}
           </div>
+
           <div className="name-and-icon">
-            {/* <span className="user-name">{childName}</span> */}
-            <span className="user-name">{childName.trim().split(' ')[0]}</span>
+            <span className="user-name">
+              {(childName || parentName || "User").trim().split(' ')[0]}
+            </span>
             <svg
               className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
               viewBox="0 0 20 20"
@@ -487,26 +442,26 @@ export default function UserDropdown() {
 
         {isOpen && (
           <div className="modern-menu">
-
             <div
-  className="menu-item"
-  onClick={() => router.push('/profile')}
->
-  <svg
-    className="icon-sm"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M20 21v-2a4 4 0 0 0-3-3.87"></path>
-    <path d="M4 21v-2a4 4 0 0 1 3-3.87"></path>
-    <circle cx="12" cy="7" r="4"></circle>
-  </svg>
-  Profile
-</div>
+              className="menu-item"
+              onClick={() => router.push('/profile')}
+            >
+              <svg
+                className="icon-sm"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M4 21v-2a4 4 0 0 1 3-3.87"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Profile
+            </div>
+
             <div
               className="menu-item home-item"
               onClick={() => router.push('/home')}

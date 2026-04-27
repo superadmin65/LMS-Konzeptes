@@ -3,6 +3,7 @@ import UserDropdown from "comps/UserDropdown";
 import Head from "next/head";
 import "../pages/login.css"; // reuse SAME CSS
 import Swal from "sweetalert2";
+import { apiService } from "../utils/apiService";
 
 export default function Profile() {
   const [form, setForm] = useState({
@@ -24,13 +25,47 @@ export default function Profile() {
 const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const name = localStorage.getItem("child_name") || "";
-    setForm((prev) => ({
-      ...prev,
-      c_first: name.split(" ")[0] || "",
-      c_last: name.split(" ")[1] || "",
-    }));
-  }, []);
+  const fetchProfile = async () => {
+    try {
+      const user_id = localStorage.getItem("user_id");
+       if (!user_id) return;
+
+      const { data } = await apiService.getProfile({ user_id });
+
+      if (data.status === "success") {
+
+        const childName = data.c_first_name || "";
+const parentName = data.p_first_name || "";
+
+localStorage.setItem("child_name", childName);
+localStorage.setItem("parent_name", parentName);
+localStorage.setItem("profile_pic", data.profile_pic || "");
+        setForm({
+          c_first: data.c_first_name || "",
+c_last: data.c_last_name || "",
+          p_first: data.p_first_name || "",
+          p_last: data.p_last_name || "",
+          mobile: data.mobile || "",
+          email: data.email || "",
+          grade: data.grade || "",
+          curriculum: data.curriculum || "",
+          language: Array.isArray(data.language)
+  ? data.language
+  : data.language
+  ? data.language.split(",")
+  : [],
+          package: data.user_package || "",
+
+          profile_pic: data.profile_pic || "",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchProfile();
+}, []);
 useEffect(() => {
   const handleClickOutside = (e) => {
     if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -45,9 +80,17 @@ useEffect(() => {
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleAvatar = (e) => {
-    const file = e.target.files[0];
-    if (file) setAvatar(URL.createObjectURL(file));
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onloadend = () => {
+    setAvatar(reader.result); // ✅ base64
   };
+
+  reader.readAsDataURL(file);
+};
 
  const handleSave = () => {
   Swal.fire({
@@ -113,16 +156,43 @@ useEffect(() => {
     },
   });
 };
-
 const executeSave = async () => {
   try {
-    // 1. Show toast immediately
-    setShowToast(true);
+    await apiService.updateProfile({
+      user_id: localStorage.getItem("user_id"),
 
-    // 👉 Later API call here
-    console.log("Saving:", form);
+      p_first_name: form.p_first,
+      p_last_name: form.p_last,
+      c_first_name: form.c_first,
+      c_last_name: form.c_last,
+      mobile: form.mobile,
 
-    // 2. Hide toast after 2 sec
+      grade: form.grade,
+      curriculum: form.curriculum,
+      language: form.language.join(","), // IMPORTANT
+      package_type: form.package,
+
+      profile_pic: avatar || form.profile_pic,
+    });
+
+   const newPic = avatar || form.profile_pic || "";
+const newChild = form.c_first || "";
+const newParent = form.p_first || "";
+
+localStorage.setItem("profile_pic", newPic);
+localStorage.setItem("child_name", newChild);
+localStorage.setItem("parent_name", newParent);
+
+window.dispatchEvent(new CustomEvent("profile-updated", {
+  detail: {
+    profile_pic: newPic,
+    child_name: newChild,
+    parent_name: newParent,
+  }
+}));
+
+setShowToast(true);
+
     setTimeout(() => {
       setShowToast(false);
     }, 2000);
@@ -198,30 +268,33 @@ const executeSave = async () => {
 
   {/* ✅ Clickable Avatar */}
   <div
-    onClick={() => document.getElementById("avatarUpload").click()}
-    style={{
-      width: "80px",
-      height: "80px",
-      borderRadius: "50%",
-      background: "#33691e",
-      margin: "0 auto",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      color: "white",
-      fontSize: "26px",
-      cursor: "pointer",
-      overflow: "hidden",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-    }}
-  >
-    {avatar ? (
-      <img src={avatar} style={{ width: "100%", height: "100%" }} />
-    ) : (
-      form.c_first?.charAt(0)
-    )}
-  </div>
-
+  onClick={() => document.getElementById("avatarUpload").click()}
+  style={{
+    width: "80px",
+    height: "80px",
+    borderRadius: "50%",
+    background: "#33691e",
+    margin: "0 auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "white",
+    fontSize: "26px",
+    cursor: "pointer",
+    overflow: "hidden",
+    backgroundImage:
+      avatar
+        ? `url(${avatar})`
+        : form.profile_pic
+        ? `url(${form.profile_pic})`
+        : "none",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  {!avatar && !form.profile_pic &&
+    (form.c_first || form.p_first || "?").charAt(0).toUpperCase()}
+</div>
   <p style={{ fontSize: "12px", marginTop: "6px", color: "#2b7d10" }}>
     Click to change photo
   </p>

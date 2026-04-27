@@ -97,7 +97,7 @@ useEffect(() => {
     setForm({ ...form, mobile: value });
   };
 
-  
+  // const handleAuth = async (e) => {
   //   e.preventDefault();
   //   if (isSignup && !validatePassword(form.password)) return;
 
@@ -183,6 +183,10 @@ useEffect(() => {
             mobile: form.mobile,
           email: submitData.get("email"),
             package_type: form.package,
+
+            grade: form.grade,
+language: form.language.join(","), // IMPORTANT
+curriculum: form.curriculum,
           }
         : {  email: actualIdentifier, password: actualPassword };
 
@@ -190,6 +194,8 @@ useEffect(() => {
 
       if (data.status === "success") {
         if (isSignup) {
+
+          
           await Swal.fire({
             icon: "success",
             title: "Success!",
@@ -197,13 +203,34 @@ useEffect(() => {
             confirmButtonColor: "#33691e",
           });
           setIsSignup(false);
-        } else {
-          localStorage.setItem("user_id", data.user_id);
-          localStorage.setItem("isLoggedIn", "true");
-          localStorage.setItem("child_name", data.child_name || "Student");
-          localStorage.setItem("show_login_popup", "true");
-          setIsLoggedIn(true);
-        }
+       } else {
+  // Core session
+  localStorage.setItem("user_id",     data.user_id);
+  localStorage.setItem("user_email",  data.email || actualIdentifier || "");
+  localStorage.setItem("isLoggedIn",  "true");
+
+  // 👇 Names + photo for UserDropdown (so it shows on the FIRST page after login)
+  localStorage.setItem("child_name",  data.c_first_name || "");
+  localStorage.setItem("parent_name", data.p_first_name || "");
+  localStorage.setItem("profile_pic", data.profile_pic  || "");
+
+  // Optional extras (handy for other pages, no extra fetch needed)
+  localStorage.setItem("grade",       data.grade        || "");
+  localStorage.setItem("language",    data.language     || "");
+  localStorage.setItem("curriculum",  data.curriculum   || "");
+
+  // Notify dropdown immediately (in case it's already mounted)
+  window.dispatchEvent(new CustomEvent("profile-updated", {
+    detail: {
+      profile_pic: data.profile_pic  || "",
+      child_name:  data.c_first_name || "",
+      parent_name: data.p_first_name || "",
+    }
+  }));
+
+  localStorage.setItem("show_login_popup", "true");
+  setIsLoggedIn(true);
+}
       } else {
         Swal.fire({
           icon: "error",

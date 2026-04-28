@@ -15,6 +15,10 @@ export const apiService = {
   login: (data) => api.post("/v2/user/login", data),
   register: (data) => api.post("/v2/user/register", data),
 
+  // PROFILE ✅ ADD THIS BLOCK
+  getProfile: (data) => api.post("/v2/user/get-profile", data),
+  updateProfile: (data) => api.post("/v2/user/update-profile", data),
+
   // --- EXIT / LOGOUT ---
   logout: (data) => api.post("/exit_api/logout", data),
 

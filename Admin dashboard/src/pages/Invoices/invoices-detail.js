@@ -12,6 +12,7 @@ import {
   Label,
   Button,
   Spinner,
+  FormFeedback,
 } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import MCQSection from "./MCQSection";
@@ -27,6 +28,7 @@ import RightOneSection from "./RightOneSection";
 import FillUpSection from "./FillUpSection";
 import GroupSection from "./GroupSection";
 import CompletePuzzleSection from "./CompletePuzzleSection";
+import DragAndDropSection from "./DragAndDropSection";
 
 // HELPERS
 import { get, post } from "../../helpers/api_helper";
@@ -148,6 +150,9 @@ function InvoicesDetail() {
 
       // -- COMPLETE PUZZLE SPECIFIC ---
       puzzlePairs: [{ base: "", right: "", wrong: "" }],
+
+      // --  DRAG AND DROP SPECIFIC ---
+      dragDropItems: [{ src: "", word: "" }],
     },
 
     onSubmit: async (values) => {
@@ -509,6 +514,47 @@ function InvoicesDetail() {
             break;
           }
 
+          case "draganddrop": {
+            const items = values.dragDropItems.filter((i) => i.src && i.word);
+
+            const words = items.map((item, idx) => ({
+              x: 240,
+              y: 40 + idx * 90, // Increased spacing for images
+              word: item.word.trim(),
+            }));
+
+            const paths = items.map((item, idx) => ({
+              rotate: 0,
+              src: item.src, // This is now the URL returned from your upload
+              x: 20,
+              y: 20 + idx * 90,
+              width: 70,
+              height: 70,
+              maintainAR: true,
+              type: "image",
+              fill: "none",
+              stroke: "#0d3756",
+            }));
+
+            apiPayload = {
+              ...basePayload,
+              type: "dragAndDrop",
+              btn_label: "Match",
+              data_json: JSON.stringify({
+                title: values.title,
+                width: 400,
+                height: 50 + items.length * 90,
+                wordWidth: 60,
+                words: words,
+                svg: {
+                  paths: paths,
+                  props: { fill: "none", strokeWidth: 1, stroke: "black" },
+                },
+              }),
+            };
+            break;
+          }
+
           default:
             Swal.fire("Error", "Invalid activity type", "error");
             return;
@@ -675,6 +721,14 @@ function InvoicesDetail() {
           validation.setFieldValue("puzzlePairs", reconstructed);
         }
 
+        if (parsedData && activityType === "dragAndDrop" && parsedData.words) {
+          const reconstructed = parsedData.words.map((w, idx) => ({
+            word: w.word,
+            src: parsedData.svg.paths[idx] ? parsedData.svg.paths[idx].src : "",
+          }));
+          validation.setFieldValue("dragDropItems", reconstructed);
+        }
+
         validation.setValues({
           ...validation.initialValues,
           id: editData.id,
@@ -729,17 +783,124 @@ function InvoicesDetail() {
                 <Col md={4}>
                   <Label>Grade</Label>
                   <Input
+                    type="select"
+                    style={commonInputStyle}
+                    {...validation.getFieldProps("grade")}
+                    invalid={
+                      !!(validation.touched.grade && validation.errors.grade)
+                    }
+                  >
+                    <option value="">Select Grade</option>
+                    <option value="Primary 1">Primary 1</option>
+                    <option value="Primary 2">Primary 2</option>
+                    <option value="Primary 3">Primary 3</option>
+                    <option value="Primary 4">Primary 4</option>
+                    <option value="Primary 5">Primary 5</option>
+                    <option value="Primary 6 (PSLE)">Primary 6 (PSLE)</option>
+                    <option value="Secondary 1">Secondary 1</option>
+                    <option value="Secondary 2">Secondary 2</option>
+                    <option value="Secondary 3">Secondary 3</option>
+                    <option value="Secondary 4 (O level)">
+                      Secondary 4 (O level)
+                    </option>
+                    <option value="A level">A level</option>
+                  </Input>
+                  {validation.touched.grade && validation.errors.grade && (
+                    <FormFeedback type="invalid">
+                      {validation.errors.grade}
+                    </FormFeedback>
+                  )}
+                </Col>
+
+                <Col md={4}>
+                  <Label>Language</Label>
+                  <Input
+                    type="select"
+                    style={commonInputStyle}
+                    {...validation.getFieldProps("language")}
+                    invalid={
+                      !!(
+                        validation.touched.language &&
+                        validation.errors.language
+                      )
+                    }
+                  >
+                    <option value="">Select Language</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="German">German</option>
+                    <option value="French">French</option>
+                  </Input>
+                  {validation.touched.language &&
+                    validation.errors.language && (
+                      <FormFeedback type="invalid">
+                        {validation.errors.language}
+                      </FormFeedback>
+                    )}
+                </Col>
+
+                <Col md={4}>
+                  <Label>Curriculum</Label>
+                  <Input
+                    type="select"
+                    style={commonInputStyle}
+                    {...validation.getFieldProps("curriculum")}
+                    invalid={
+                      !!(
+                        validation.touched.curriculum &&
+                        validation.errors.curriculum
+                      )
+                    }
+                  >
+                    <option value="">Select Curriculum</option>
+                    <option value="MOE">MOE</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="CBSE">CBSE</option>
+                  </Input>
+                  {validation.touched.curriculum &&
+                    validation.errors.curriculum && (
+                      <FormFeedback type="invalid">
+                        {validation.errors.curriculum}
+                      </FormFeedback>
+                    )}
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          {/* <Card className="mb-3">
+            <CardBody
+              style={{
+                pointerEvents: isViewOnly ? "none" : "auto",
+                opacity: isViewOnly ? 0.9 : 1,
+              }}
+            >
+              <h5 className="card-title mb-4">1. General Information</h5>
+              <Row>
+                <Col md={4}>
+                  <Label>Grade</Label>
+                  <Input
                     type="text"
                     list="grade-options"
                     placeholder="Select or Type Grade"
                     style={commonInputStyle}
                     {...validation.getFieldProps("grade")}
+                    invalid={
+                      validation.touched.grade && validation.errors.grade
+                        ? true
+                        : false
+                    }
                   />
+
                   <datalist id="grade-options">
-                    {/* You can map through unique grades from your 'cards' state here */}
+                  
                     <option value="Grade 1" />
                     <option value="Grade 2" />
                   </datalist>
+                  {validation.touched.grade && validation.errors.grade ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.grade}
+                    </FormFeedback>
+                  ) : null}
                 </Col>
                 <Col md={4}>
                   <Label>Language</Label>
@@ -749,11 +910,21 @@ function InvoicesDetail() {
                     placeholder="Select or Type Language"
                     style={commonInputStyle}
                     {...validation.getFieldProps("language")}
+                    invalid={
+                      validation.touched.language && validation.errors.language
+                        ? true
+                        : false
+                    }
                   />
                   <datalist id="lang-options">
                     <option value="English" />
                     <option value="Hindi" />
                   </datalist>
+                  {validation.touched.language && validation.errors.language ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.language}
+                    </FormFeedback>
+                  ) : null}
                 </Col>
                 <Col md={4}>
                   <Label>Curriculum</Label>
@@ -763,15 +934,27 @@ function InvoicesDetail() {
                     placeholder="Select or Type Curriculum"
                     style={commonInputStyle}
                     {...validation.getFieldProps("curriculum")}
+                    invalid={
+                      validation.touched.curriculum &&
+                      validation.errors.curriculum
+                        ? true
+                        : false
+                    }
                   />
                   <datalist id="curr-options">
                     <option value="CBSE" />
                     <option value="ICSE" />
                   </datalist>
+                  {validation.touched.curriculum &&
+                  validation.errors.curriculum ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.curriculum}
+                    </FormFeedback>
+                  ) : null}
                 </Col>
               </Row>
             </CardBody>
-          </Card>
+          </Card> */}
 
           <Card className="mb-3">
             <CardBody
@@ -791,6 +974,11 @@ function InvoicesDetail() {
                       type="select"
                       style={commonInputStyle}
                       {...validation.getFieldProps("card_id")}
+                      invalid={
+                        validation.touched.card_id && validation.errors.card_id
+                          ? true
+                          : false
+                      }
                     >
                       <option value="">-- Choose a Card --</option>
                       {cards.map((c) => (
@@ -800,6 +988,11 @@ function InvoicesDetail() {
                       ))}
                     </Input>
                   )}
+                  {validation.touched.card_id && validation.errors.card_id ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.card_id}
+                    </FormFeedback>
+                  ) : null}
                 </Col>
 
                 <Col md={3}>
@@ -810,10 +1003,22 @@ function InvoicesDetail() {
                     placeholder="Select or Add Chapter"
                     style={commonInputStyle}
                     {...validation.getFieldProps("chapter_name")}
+                    invalid={
+                      validation.touched.chapter_name &&
+                      validation.errors.chapter_name
+                        ? true
+                        : false
+                    }
                   />
                   <datalist id="chapter-options">
                     {/* Map existing chapters here */}
                   </datalist>
+                  {validation.touched.chapter_name &&
+                  validation.errors.chapter_name ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.chapter_name}
+                    </FormFeedback>
+                  ) : null}
                 </Col>
                 <Col md={3}>
                   <Label>Activity Type</Label>
@@ -821,8 +1026,13 @@ function InvoicesDetail() {
                     type="select"
                     style={commonInputStyle}
                     {...validation.getFieldProps("type")}
+                    invalid={
+                      validation.touched.type && validation.errors.type
+                        ? true
+                        : false
+                    }
                   >
-                    <option value="">-- Select Type --</option>
+                    <option value="">Select Type</option>
                     <option value="mcq">MCQ (Multiple Choice)</option>
                     <option value="match">Match the Pairs (Drag & Drop)</option>
                     <option value="completeword">Complete Word</option>
@@ -839,7 +1049,13 @@ function InvoicesDetail() {
                     <option value="fillup">Fill Up</option>
                     <option value="group">Group Sorting </option>
                     <option value="completepuzzle">Complete Puzzle </option>
+                    <option value="draganddrop">Drag and Drop(image) </option>
                   </Input>
+                  {validation.touched.type && validation.errors.type ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.type}
+                    </FormFeedback>
+                  ) : null}
                 </Col>
                 <Col md={3}>
                   <Label>Activity Label</Label>
@@ -847,7 +1063,17 @@ function InvoicesDetail() {
                     type="text"
                     style={commonInputStyle}
                     {...validation.getFieldProps("label")}
+                    invalid={
+                      validation.touched.label && validation.errors.label
+                        ? true
+                        : false
+                    }
                   />
+                  {validation.touched.label && validation.errors.label ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.label}
+                    </FormFeedback>
+                  ) : null}
                 </Col>
               </Row>
             </CardBody>
@@ -868,7 +1094,17 @@ function InvoicesDetail() {
                   type="text"
                   {...validation.getFieldProps("title")}
                   placeholder="e.g. Select the correct answer"
+                  invalid={
+                    validation.touched.title && validation.errors.title
+                      ? true
+                      : false
+                  }
                 />
+                {validation.touched.title && validation.errors.title ? (
+                  <FormFeedback type="invalid">
+                    {validation.errors.title}
+                  </FormFeedback>
+                ) : null}
               </div>
               <hr />
 
@@ -1013,6 +1249,10 @@ function InvoicesDetail() {
 
               {validation.values.type === "completepuzzle" && (
                 <CompletePuzzleSection validation={validation} />
+              )}
+
+              {validation.values.type === "draganddrop" && (
+                <DragAndDropSection validation={validation} />
               )}
 
               {!validation.values.type && (

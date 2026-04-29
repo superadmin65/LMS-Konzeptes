@@ -16,6 +16,8 @@ export default function HomeView() {
   const [form, setForm] = useState({
     identifier: "",
     password: "",
+    email: "",
+    username: "",
     salutation: "",
     p_first: "",
     p_last: "",
@@ -25,22 +27,22 @@ export default function HomeView() {
     mobile: "",
     package: "",
     grade: "",
-   language: [],
+    language: [],
     curriculum: "",
   });
 
   const dropdownRef = useRef();
 
-useEffect(() => {
-  const handleClickOutside = (e) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-      setShowLangDropdown(false);
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowLangDropdown(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // 1. Initial check for logged in status
   useEffect(() => {
@@ -97,76 +99,12 @@ useEffect(() => {
     setForm({ ...form, mobile: value });
   };
 
-  // const handleAuth = async (e) => {
-  //   e.preventDefault();
-  //   if (isSignup && !validatePassword(form.password)) return;
-
-  //   try {
-  //     const action = isSignup ? apiService.register : apiService.login;
-  //     const payload = isSignup
-  //       ? {
-  //           salutation: form.salutation,
-  //           p_first_name: form.p_first,
-  //           p_last_name: form.p_last,
-  //           c_first_name: form.c_first,
-  //           c_last_name: form.c_last,
-  //           level: form.level,
-  //           mobile: form.mobile,
-  //           email: form.email,
-  //           password: form.password,
-  //           package_type: form.package,
-  //         }
-  //       : { email: form.email, password: form.password };
-
-  //     const { data } = await action(payload);
-
-  //     if (data.status === 'success') {
-  //       if (isSignup) {
-  //         await Swal.fire({
-  //           icon: 'success',
-  //           title: 'Success!',
-  //           text: 'Registration Successful!',
-  //           confirmButtonColor: '#33691e',
-  //         });
-  //         setIsSignup(false);
-  //       } else {
-  //         // --- CHANGED LOGIC HERE ---
-  //         // DO NOT show Swal here. Just set storage and trigger redirect!
-  //         localStorage.setItem('user_id', data.user_id);
-  //         localStorage.setItem('isLoggedIn', 'true');
-  //         localStorage.setItem('child_name', data.child_name || 'Student');
-
-  //         // Set flag for the popup
-  //         localStorage.setItem('show_login_popup', 'true');
-
-  //         // Trigger the component switch ("redirect")
-  //         setIsLoggedIn(true);
-  //       }
-  //     } else {
-  //       Swal.fire({
-  //         icon: 'error',
-  //         text: data.message || 'Action Failed',
-  //         confirmButtonColor: '#33691e',
-  //       });
-  //     }
-  //   } catch (err) {
-  //     Swal.fire({
-  //       icon: 'error',
-  //       text: 'Server Connection Error',
-  //       confirmButtonColor: '#33691e',
-  //     });
-  //   }
-  // };
   const handleAuth = async (e) => {
     e.preventDefault();
 
-    
-    const submitData = new FormData(e.target);
-    const actualIdentifier = submitData.get("identifier"); 
-    const actualPassword = submitData.get("password");
-
+    const actualIdentifier = (form.identifier || "").trim();
+    const actualPassword = (form.password || "").trim();
     // Use actualPassword instead of form.password for validation
-    
 
     try {
       const action = isSignup ? apiService.register : apiService.login;
@@ -181,56 +119,79 @@ useEffect(() => {
             c_last_name: form.c_last,
             level: form.level,
             mobile: form.mobile,
-          email: submitData.get("email"),
+            email: form.email,
             package_type: form.package,
 
             grade: form.grade,
-language: form.language.join(","), // IMPORTANT
-curriculum: form.curriculum,
+            language: form.language.join(","),
+            curriculum: form.curriculum,
+
+            profile_pic: "",
           }
-        : {  email: actualIdentifier, password: actualPassword };
+        : { identifier: actualIdentifier, password: actualPassword };
 
       const { data } = await action(payload);
 
       if (data.status === "success") {
         if (isSignup) {
-
-          
           await Swal.fire({
             icon: "success",
-            title: "Success!",
-            text: "Registration Successful!",
+            title: "Account Created!",
+            html: `
+    <div style="text-align:left">
+      <b>Username:</b> ${data.username}<br/>
+      <b>Password:</b> ${data.password}<br/><br/>
+      <small>Please save these credentials.</small>
+    </div>
+  `,
             confirmButtonColor: "#33691e",
           });
+
+          await fetch("http://localhost:5000/api/send-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: form.email,
+              username: data.username,
+              password: data.password,
+            }),
+          });
           setIsSignup(false);
-       } else {
-  // Core session
-  localStorage.setItem("user_id",     data.user_id);
-  localStorage.setItem("user_email",  data.email || actualIdentifier || "");
-  localStorage.setItem("isLoggedIn",  "true");
+        } else {
+          // Core session
+          localStorage.setItem("user_id", data.user_id);
+          localStorage.setItem(
+            "user_email",
+            data.email || actualIdentifier || "",
+          );
+          localStorage.setItem("isLoggedIn", "true");
 
-  // 👇 Names + photo for UserDropdown (so it shows on the FIRST page after login)
-  localStorage.setItem("child_name",  data.c_first_name || "");
-  localStorage.setItem("parent_name", data.p_first_name || "");
-  localStorage.setItem("profile_pic", data.profile_pic  || "");
+          // 👇 Names + photo for UserDropdown (so it shows on the FIRST page after login)
+          localStorage.setItem("child_name", data.c_first_name || "");
+          localStorage.setItem("parent_name", data.p_first_name || "");
+          localStorage.setItem("profile_pic", data.profile_pic || "");
 
-  // Optional extras (handy for other pages, no extra fetch needed)
-  localStorage.setItem("grade",       data.grade        || "");
-  localStorage.setItem("language",    data.language     || "");
-  localStorage.setItem("curriculum",  data.curriculum   || "");
+          // Optional extras (handy for other pages, no extra fetch needed)
+          localStorage.setItem("grade", data.grade || "");
+          localStorage.setItem("language", data.language || "");
+          localStorage.setItem("curriculum", data.curriculum || "");
 
-  // Notify dropdown immediately (in case it's already mounted)
-  window.dispatchEvent(new CustomEvent("profile-updated", {
-    detail: {
-      profile_pic: data.profile_pic  || "",
-      child_name:  data.c_first_name || "",
-      parent_name: data.p_first_name || "",
-    }
-  }));
+          // Notify dropdown immediately (in case it's already mounted)
+          window.dispatchEvent(
+            new CustomEvent("profile-updated", {
+              detail: {
+                profile_pic: data.profile_pic || "",
+                child_name: data.c_first_name || "",
+                parent_name: data.p_first_name || "",
+              },
+            }),
+          );
 
-  localStorage.setItem("show_login_popup", "true");
-  setIsLoggedIn(true);
-}
+          localStorage.setItem("show_login_popup", "true");
+          setIsLoggedIn(true);
+        }
       } else {
         Swal.fire({
           icon: "error",
@@ -250,7 +211,8 @@ curriculum: form.curriculum,
   useEffect(() => {
     if (isSignup) {
       setForm({
-       identifier: "",
+        identifier: "",
+        email: "",
         salutation: "",
         p_first: "",
         p_last: "",
@@ -260,7 +222,7 @@ curriculum: form.curriculum,
         mobile: "",
         package: "",
         grade: "",
-       language: [],
+        language: [],
         curriculum: "",
       });
     }
@@ -350,7 +312,7 @@ curriculum: form.curriculum,
                   type="text"
                   placeholder="Email Address / Username"
                   required
-                 value={form.identifier || ""}
+                  value={form.identifier || ""}
                   onChange={handleChange}
                   autoComplete="username" /* <-- Add this */
                 />
@@ -397,30 +359,28 @@ curriculum: form.curriculum,
             <div className="register-section transition-fade">
               <h2 className="auth-title">Create Account</h2>
               <div className="field-group">
-                
-              <div className="field-group">
-                <label className="group-label">Student Details</label>
-                <div className="registration-grid">
-                  <input
-                    name="c_first"
-                    placeholder=" First Name"
-                    required
-                    value={form.c_first}
-                    onChange={handleChange}
-                    className="col-4"
-                  />
-                  <input
-                    name="c_last"
-                    placeholder=" Last Name"
-                    required
-                    value={form.c_last}
-                    onChange={handleChange}
-                    className="col-4"
-                  />
-                 
+                <div className="field-group">
+                  <label className="group-label">Student Details</label>
+                  <div className="registration-grid">
+                    <input
+                      name="c_first"
+                      placeholder=" First Name"
+                      required
+                      value={form.c_first}
+                      onChange={handleChange}
+                      className="col-4"
+                    />
+                    <input
+                      name="c_last"
+                      placeholder=" Last Name"
+                      required
+                      value={form.c_last}
+                      onChange={handleChange}
+                      className="col-4"
+                    />
+                  </div>
                 </div>
-              </div>
-              <label className="group-label">Parent Details</label>
+                <label className="group-label">Parent Details</label>
                 <div className="registration-grid">
                   <select
                     name="salutation"
@@ -450,7 +410,7 @@ curriculum: form.curriculum,
                     onChange={handleChange}
                     className="col-4"
                   />
-                 <input
+                  <input
                     name="mobile"
                     placeholder="Mobile"
                     required
@@ -475,7 +435,6 @@ curriculum: form.curriculum,
                 <label className="group-label">Account Information</label>
 
                 <div className="registration-grid ">
-                 
                   <select
                     name="grade"
                     required
@@ -484,19 +443,19 @@ curriculum: form.curriculum,
                     className="col-4"
                   >
                     <option value="">Select Grade</option>
-<option>Primary 1</option>
-<option>Primary 2</option>
-<option>Primary 3</option>
-<option>Primary 4</option>
-<option>Primary 5</option>
-<option>Primary 6 (PSLE)</option>
+                    <option>Primary 1</option>
+                    <option>Primary 2</option>
+                    <option>Primary 3</option>
+                    <option>Primary 4</option>
+                    <option>Primary 5</option>
+                    <option>Primary 6 (PSLE)</option>
 
-<option>Secondary 1</option>
-<option>Secondary 2</option>
-<option>Secondary 3</option>
-<option>Secondary 4 (O Level)</option>
+                    <option>Secondary 1</option>
+                    <option>Secondary 2</option>
+                    <option>Secondary 3</option>
+                    <option>Secondary 4 (O Level)</option>
 
-<option>A Level</option>
+                    <option>A Level</option>
                   </select>
 
                   <select
@@ -507,48 +466,46 @@ curriculum: form.curriculum,
                     className="col-4"
                   >
                     <option value="">Select Curriculum</option>
-<option value="MOE">MOE</option>
-<option value="IGCSE">IGCSE</option>
-<option value="IB">IB</option>
-<option value="CBSE">CBSE</option>
+                    <option value="MOE">MOE</option>
+                    <option value="IGCSE">IGCSE</option>
+                    <option value="IB">IB</option>
+                    <option value="CBSE">CBSE</option>
                   </select>
-                  
-    <div className="col-4 lang-dropdown" ref={dropdownRef}>
-  <div
-  className="custom-select-box"
-  onClick={() => setShowLangDropdown(!showLangDropdown)}
->
-  <span>
-    {form.language.length > 0
-      ? form.language.join(", ")
-      : "Select Language"}
-  </span>
 
-  
-</div>
+                  <div className="col-4 lang-dropdown" ref={dropdownRef}>
+                    <div
+                      className="custom-select-box"
+                      onClick={() => setShowLangDropdown(!showLangDropdown)}
+                    >
+                      <span>
+                        {form.language.length > 0
+                          ? form.language.join(", ")
+                          : "Select Language"}
+                      </span>
+                    </div>
 
-  {showLangDropdown && (
-    <div className="custom-dropdown">
-      {["Hindi", "French", "German"].map((lang) => (
-        <label key={lang} className="dropdown-item">
-          <input
-            type="checkbox"
-            checked={form.language.includes(lang)}
-            onChange={() => {
-              const updated = form.language.includes(lang)
-                ? form.language.filter((l) => l !== lang)
-                : [...form.language, lang];
+                    {showLangDropdown && (
+                      <div className="custom-dropdown">
+                        {["Hindi", "French", "German"].map((lang) => (
+                          <label key={lang} className="dropdown-item">
+                            <input
+                              type="checkbox"
+                              checked={form.language.includes(lang)}
+                              onChange={() => {
+                                const updated = form.language.includes(lang)
+                                  ? form.language.filter((l) => l !== lang)
+                                  : [...form.language, lang];
 
-              setForm({ ...form, language: updated });
-            }}
-          />
-          {lang}
-        </label>
-      ))}
-    </div>
-  )}
-</div>
-<select
+                                setForm({ ...form, language: updated });
+                              }}
+                            />
+                            {lang}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <select
                     name="package"
                     required
                     value={form.package}
@@ -559,12 +516,10 @@ curriculum: form.curriculum,
                     <option value="free">Free</option>
                     <option value="paid">Paid</option>
                   </select>
-                  
+                </div>
+              </div>
+            </div>
 
-                  </div>
-</div>
-</div>
-                
             <button
               type="submit"
               className={

@@ -13,16 +13,16 @@ const CompleteWordSection = ({ validation }) => {
         name="completeWords"
         render={(arrayHelpers) => (
           <>
-            {validation.values.completeWords.map((item, index) => (
+            {/* {validation.values.completeWords.map((item, index) => (
               <div key={index} className="p-3 mb-3 border rounded bg-light">
-                {/* Word */}
+                
                 <Label>Word</Label>
                 <Input
                   placeholder="e.g. school"
                   {...validation.getFieldProps(`completeWords.${index}.word`)}
                 />
 
-                {/* Question */}
+                
                 <Label className="mt-2">Question (with blank)</Label>
                 <Input
                   placeholder="_ठशाला"
@@ -31,7 +31,7 @@ const CompleteWordSection = ({ validation }) => {
                   )}
                 />
 
-                {/* Correct */}
+                
                 <Label className="mt-2">Correct Answer</Label>
                 <Input
                   placeholder="ठ"
@@ -40,7 +40,7 @@ const CompleteWordSection = ({ validation }) => {
                   )}
                 />
 
-                {/* Options */}
+                
                 <Label className="mt-2">Options</Label>
                 <FieldArray
                   name={`completeWords.${index}.options`}
@@ -74,7 +74,72 @@ const CompleteWordSection = ({ validation }) => {
                   )}
                 />
 
-                {/* Remove */}
+                
+                <Button
+                  color="danger"
+                  size="sm"
+                  className="mt-3"
+                  onClick={() => arrayHelpers.remove(index)}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))} */}
+
+            {/* CompleteWordSection.js */}
+            {validation.values.completeWords.map((item, index) => (
+              <div key={index} className="p-3 mb-3 border rounded bg-light">
+                {/* Question - Now first field */}
+                <Label>Question (with blank)</Label>
+                <Input
+                  placeholder="_ठशाला"
+                  {...validation.getFieldProps(
+                    `completeWords.${index}.question`,
+                  )}
+                />
+
+                {/* Correct Answer - Now second field */}
+                <Label className="mt-2">Correct Answer</Label>
+                <Input
+                  placeholder="ठ"
+                  {...validation.getFieldProps(
+                    `completeWords.${index}.correct`,
+                  )}
+                />
+
+                {/* Options - Third field */}
+                <Label className="mt-2">Options</Label>
+                <FieldArray
+                  name={`completeWords.${index}.options`}
+                  render={(optHelpers) => (
+                    <Row>
+                      {item.options.map((opt, i) => (
+                        <Col md={3} key={i} className="mb-2">
+                          <Input
+                            value={opt}
+                            placeholder={`Option ${i + 1}`}
+                            onChange={(e) =>
+                              validation.setFieldValue(
+                                `completeWords.${index}.options.${i}`,
+                                e.target.value,
+                              )
+                            }
+                          />
+                        </Col>
+                      ))}
+                      <Col xs={12}>
+                        <Button
+                          size="sm"
+                          color="success"
+                          onClick={() => optHelpers.push("")}
+                        >
+                          + Add Option
+                        </Button>
+                      </Col>
+                    </Row>
+                  )}
+                />
+
                 <Button
                   color="danger"
                   size="sm"
@@ -86,11 +151,23 @@ const CompleteWordSection = ({ validation }) => {
               </div>
             ))}
 
-            <Button
+            {/* <Button
               color="success"
               onClick={() =>
                 arrayHelpers.push({
                   word: "",
+                  question: "",
+                  correct: "",
+                  options: ["", ""],
+                })
+              }
+            >
+              + Add Question
+            </Button> */}
+            <Button
+              color="success"
+              onClick={() =>
+                arrayHelpers.push({
                   question: "",
                   correct: "",
                   options: ["", ""],

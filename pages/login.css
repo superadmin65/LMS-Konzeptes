@@ -18,214 +18,102 @@
   text-align: center;
   margin: auto;
   overflow: hidden;
-  /* Smoothly animates the resize when switching modes */
-  transition:
-    max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    padding 0.4s ease;
+  transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;
 }
 
-/* ========================================= */
-/* MODE SPECIFIC SIZING                      */
-/* ========================================= */
+.login-mode { max-width: 400px; padding: 40px; }
+.register-mode { max-width: 580px; padding: 20px 25px; }
 
-/* Login page stays exactly at your requested size */
-.login-mode {
-  max-width: 400px;
-  padding: 40px;
-}
-
-/* Register page is decreased to fit better on screen without scrolling */
-.register-mode {
-  max-width: 580px; /* Decreased from 680px */
-  padding: 20px 25px; /* Decreased padding */
-}
-
-/* Animation for content appearance */
-.transition-fade {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
+.transition-fade { animation: fadeIn 0.5s ease-in-out; }
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ========================================= */
 /* BRANDING & TITLES                         */
 /* ========================================= */
-.auth-logo {
-  width: 175px; /* Slightly smaller to save vertical space */
-  display: block;
-  margin: 0 auto 10px auto;
-}
-
-.auth-title {
-  color: #1b5e20;
-  font-weight: 700;
-  margin-bottom: 15px; /* Reduced from 25px */
-  font-size: 1.3rem; /* Slightly smaller title */
-}
+.auth-logo { width: 175px; display: block; margin: 0 auto 10px auto; }
+.auth-title { color: #1b5e20; font-weight: 700; margin-bottom: 15px; font-size: 1.3rem; }
 
 /* ========================================= */
 /* REGISTRATION GRID & GROUPS                */
 /* ========================================= */
 .field-group {
-  margin-bottom: 10px; /* Tighter grouping */
+  margin-bottom: 10px;
   text-align: left;
   border-bottom: 1px solid #c5e1a5;
   padding-bottom: 6px;
 }
-
-.field-group:last-of-type {
-  border-bottom: none;
-}
+.field-group:last-of-type { border-bottom: none; }
 
 .group-label {
-  display: block;
-  font-size: 0.7rem; /* Smaller sub-labels */
-  font-weight: 700;
-  color: #388e3c;
-  text-transform: uppercase;
-  margin-bottom: 6px;
+  display: block; font-size: 0.7rem; font-weight: 700;
+  color: #388e3c; text-transform: uppercase; margin-bottom: 6px;
 }
-
 .input-label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #388e3c;
-  text-align: left;
-  margin-bottom: 3px;
+  display: block; font-size: 0.75rem; font-weight: 700;
+  color: #388e3c; text-align: left; margin-bottom: 3px;
 }
-
 .registration-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 16px; /* Tighter gap between fields */
-  width: 100%;
+  display: grid; grid-template-columns: repeat(12, 1fr);
+  gap: 16px; width: 100%;
 }
-
-.col-3 {
-  grid-column: span 3;
-}
-.col-4 {
-  grid-column: span 4;
-}
-.col-5 {
-  grid-column: span 5;
-}
-.col-12 {
-  grid-column: span 12;
-}
-
-.full-width-field {
-  width: 100%;
-  margin-bottom: 10px;
-}
+.col-3 { grid-column: span 3; }
+.col-4 { grid-column: span 4; }
+.col-5 { grid-column: span 5; }
+.col-12 { grid-column: span 12; }
+.full-width-field { width: 100%; margin-bottom: 10px; }
 
 /* ========================================= */
 /* INPUT & SELECT STYLING                    */
 /* ========================================= */
-input,
-select {
-  padding: 8px 12px; /* Slimmer padding */
+input, select {
+  padding: 8px 12px;
   border: none;
   border-radius: 8px;
   background: #ffffff;
-  font-size: 0.85rem; /* Smaller text size */
+  font-size: 0.85rem;
   width: 100%;
   box-sizing: border-box;
-  height: 43px; /* Reduced height from 43px to eliminate scrolling */
+  height: 43px;
 }
+input:focus { outline: 2px solid #4caf50; }
 
-input:focus {
-  outline: 2px solid #4caf50;
-}
-
-.password-container {
-  position: relative;
-  display: flex;
-  width: 100%;
-}
-
+.password-container { position: relative; display: flex; width: 100%; }
 .eye-btn {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  z-index: 5;
-  font-size: 0.9rem;
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  cursor: pointer; z-index: 5; font-size: 0.9rem;
 }
-
 .pass-warning {
-  color: #d32f2f;
-  font-size: 9.5px;
-  font-weight: 600;
-  text-align: left;
-  margin-top: 4px;
+  color: #d32f2f; font-size: 9.5px; font-weight: 600;
+  text-align: left; margin-top: 4px;
 }
 
 /* ========================================= */
-/* BUTTON STYLING (SEPARATE CLASSES)         */
+/* BUTTON STYLING                             */
 /* ========================================= */
-
-/* Login Button - Full Width */
 .main-submit-btn {
-  width: 100%;
-  padding: 10px;
-  background: #33691e;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 15px;
-  font-size: 1rem;
+  width: 100%; padding: 10px; background: #33691e; color: white;
+  border: none; border-radius: 30px; font-weight: 700;
+  cursor: pointer; margin-top: 15px; font-size: 1rem;
   transition: background 0.3s;
 }
+.main-submit-btn:hover { background: #1b5e20; }
 
-.main-submit-btn:hover {
-  background: #1b5e20;
-}
-
-/* Register Button - Compact Width (40%) */
 .main-submit-btn-register {
-  width: 40%;
-  padding: 10px;
-  background: #33691e;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 12px;
-  font-size: 0.95rem;
+  width: 40%; padding: 10px; background: #33691e; color: white;
+  border: none; border-radius: 30px; font-weight: 700;
+  cursor: pointer; margin-top: 12px; font-size: 0.95rem;
   transition: background 0.3s;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  display: block; margin-left: auto; margin-right: auto;
 }
-
-.main-submit-btn-register:hover {
-  background: #1b5e20;
-}
+.main-submit-btn-register:hover { background: #1b5e20; }
 
 .toggle-view {
-  margin-top: 12px;
-  color: #1b5e20;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-decoration: underline;
+  margin-top: 12px; color: #1b5e20; cursor: pointer;
+  background: transparent; border: none; font-size: 0.85rem;
+  font-weight: 700; text-decoration: underline;
 }
 
 /* ========================================= */
@@ -236,11 +124,7 @@ input:focus {
   border-radius: 20px !important;
   font-family: 'Poppins', sans-serif !important;
 }
-
-.swal2-title {
-  color: #1b5e20 !important;
-}
-
+.swal2-title { color: #1b5e20 !important; }
 .swal2-styled.swal2-confirm {
   padding: 8px 24px !important;
   font-weight: 600;
@@ -248,96 +132,59 @@ input:focus {
   background-color: #33691e !important;
   border-radius: 8px !important;
 }
-
-.swal2-icon.swal2-success .swal2-success-ring {
-  border: 4px solid #2e7d32 !important;
-}
-
-.swal2-icon.swal2-success [class^='swal2-success-line'] {
-  background-color: #33691e !important;
-}
+.swal2-icon.swal2-success .swal2-success-ring { border: 4px solid #2e7d32 !important; }
+.swal2-icon.swal2-success [class^='swal2-success-line'] { background-color: #33691e !important; }
 
 /* ========================================= */
-/* RESPONSIVE SAFETY                         */
+/* RESPONSIVE SAFETY (registration)          */
 /* ========================================= */
 @media (max-width: 600px) {
-  .registration-grid > * {
-    grid-column: span 12 !important;
-  }
-  .register-mode {
-    max-width: 95%;
-    padding: 15px;
-  }
-  .main-submit-btn-register {
-    width: 80%; /* Wider on small mobile screens for accessibility */
-  }
+  .registration-grid > * { grid-column: span 12 !important; }
+  .register-mode { max-width: 95%; padding: 15px; }
+  .main-submit-btn-register { width: 80%; }
 }
 
-/* Container for Email and Password fields */
-.input-with-icon,
-.password-container {
-  position: relative;
-  display: flex;
-  width: 100%;
+/* Email/password icon containers (legacy) */
+.input-with-icon, .password-container {
+  position: relative; display: flex; width: 100%;
 }
+.input-with-icon input, .password-container input { padding-right: 40px !important; }
 
-/* Ensure icons don't overlap the text */
-.input-with-icon input,
-.password-container input {
-  padding-right: 40px !important;
+.input-icon, .eye-btn {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  display: flex; align-items: center; justify-content: center;
+  color: #666666; z-index: 5;
 }
+.input-icon { pointer-events: none; color: #33691e; }
+.eye-btn { cursor: pointer; transition: color 0.2s ease; color: #33691e; }
 
-/* Shared Icon Styling */
-.input-icon,
-.eye-btn {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #666666; /* Match your professional gray */
-  z-index: 5;
-}
-
-/* Email icon is just for show, so it shouldn't block clicks */
-.input-icon {
-  pointer-events: none;
-  color: #33691e;
-}
-
-/* Eye button needs to be clickable */
-.eye-btn {
-  cursor: pointer;
-  transition: color 0.2s ease;
-  color: #33691e;
-}
-
-.eye-btn:hover {
-  /* color: #33691e; */
-}
-.lang-dropdown {
-  position: relative;
-  width: 100%;
-}
+.lang-dropdown { position: relative; width: 100%; }
 .custom-select-box {
-  height: 43px; /* EXACT MATCH */
+  position: relative;
+  height: 43px;
   background: #ffffff;
   border-radius: 8px;
-  padding: 8px 12px; /* SAME AS INPUT */
+  padding: 8px 36px 8px 12px;
   display: flex;
   align-items: center;
-  font-size: 0.85rem; /* MATCH INPUT */
+  font-size: 0.85rem;
   cursor: pointer;
   box-sizing: border-box;
 }
-
+.custom-select-box::after {
+  content: "";
+  position: absolute;
+  right: 10px; top: 50%;
+  width: 14px; height: 14px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M6 8L10 12L14 8' stroke='%2333691e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
 .custom-dropdown {
   position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
+  top: 100%; left: 0; width: 100%;
   background: #ffffff;
   border-radius: 8px;
   border: 1px solid #dcdcdc;
@@ -346,47 +193,432 @@ input:focus {
   margin-top: 4px;
   padding: 6px;
 }
-
 .dropdown-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px; font-size: 0.85rem; cursor: pointer;
+}
+.dropdown-item input { accent-color: #33691e; width: 16px; height: 16px; }
+
+/* ========================================= */
+/* KONZEPTES SPLIT LOGIN                     */
+/* ========================================= */
+
+/* Reset .auth-page when split is showing */
+.auth-page:has(.konz-split) {
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+  background: #fdfaf2;
+}
+
+.konz-split {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  font-family: "Quicksand", "Poppins", sans-serif;
+  background: #fdfaf2;
+}
+
+/* LEFT brand panel — uses /first_bg.png artwork */
+.konz-split__brand {
+  position: relative;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 40px 40px 28px;
+  overflow: hidden;
+  background-color: #dcedc8;
+  background-image: url('/first_bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom right;
+  background-blend-mode: multiply;
+
+  border-right: 1px solid rgba(51, 105, 30, 0.18);
+  animation: konz-float 4s ease-in-out infinite;
+}
+/* Lighter overlay — keep welcome text legible without washing out the artwork */
+.konz-split__brand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(253, 250, 242, 0) 0%,
+    rgba(253, 250, 242, 0) 55%,
+    rgba(253, 250, 242, 0.75) 100%
+  );
+  pointer-events: none;
+}
+
+
+@keyframes konz-float {
+  0%, 100% { background-position: bottom right; }
+  50%      { background-position: bottom 8px right; }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .konz-split__brand {
+    animation: none;
+  }
+}
+
+.konz-split__logo-row,
+.konz-split__brand-copy {
+  position: relative;
+  z-index: 1;
+}
+.konz-split__brand-logo { height: 72px; width: auto; }
+.konz-split__brand-copy { max-width: 380px; }
+.konz-split__brand-copy h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #1b5e20;
+  font-family: "Quicksand", "Poppins", sans-serif;
+}
+.konz-split__brand-copy p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #2b5d1a;
+}
+
+/* ========================================= */
+/* RIGHT form panel — FLAT (no card popup)   */
+/* ========================================= */
+.konz-split__form {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 56px 48px;
+  /* removed: margin, background, border-radius, box-shadow, ::before accent, pop animation */
+  background: transparent;
+  overflow: visible;
+}
+.konz-split__form > * { width: 100%; max-width: 380px; }
+
+/* Reduce motion safety (no animation to disable now, kept for compatibility) */
+@media (prefers-reduced-motion: reduce) {
+  .konz-split__form { animation: none; }
+}
+
+
+
+
+.konz-split__mobile-logo {
+  display: none;
+  height: 36px;
+  margin: 0 auto 24px;
+}
+
+.konz-split__title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1b5e20;
+  margin: 0 0 6px;
+  font-family: "Quicksand", "Poppins", sans-serif;
+}
+.konz-split__subtitle {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 28px;
+}
+
+.konz-split__form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Field — scoped, override global input rules */
+.konz-field { display: flex; flex-direction: column; gap: 8px; }
+.konz-field__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #33691e;
+}
+.konz-field__input-wrap { position: relative; }
+.konz-field__icon-left,
+.konz-field__icon-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  color: #33691e;
+}
+.konz-field__icon-left { left: 14px; pointer-events: none; }
+.konz-field__icon-right { right: 14px; cursor: pointer; }
+.konz-field__icon-right:hover { color: #1b5e20; }
+
+.konz-field__input {
+  width: 100%;
+  height: auto !important;
+  padding: 14px 16px !important;
+  border: 2px solid #dbe9d2 !important;
+  border-radius: 12px !important;
+  background: #fff;
+  color: #1e3a0b;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+.konz-field__input--has-left { padding-left: 44px !important; }
+.konz-field__input--has-right { padding-right: 44px !important; }
+.konz-field__input:focus {
+  border-color: #33691e !important;
+  box-shadow: 0 0 0 4px rgba(51, 105, 30, 0.15);
+  outline: none;
+}
+
+/* Submit button */
+.konz-split__submit {
+  margin-top: 6px;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(135deg, #33691e 0%, #1b5e20 100%);
+  box-shadow: 0 8px 20px -6px rgba(51, 105, 30, 0.45);
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+.konz-split__submit span {
+  transition: transform 0.2s ease;
+  font-size: 18px;
+}
+.konz-split__submit:hover span {
+  transform: translateX(4px);
+}
+.konz-split__submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px -6px rgba(51, 105, 30, 0.55);
+}
+
+/* Mobile — stack vertically, hide brand panel */
+@media (max-width: 860px) {
+  .konz-split__brand { display: none; }
+  .konz-split__mobile-logo { display: block; }
+  .konz-split__form {
+    padding: 32px 24px;
+  }
+}
+@media (max-width: 480px) {
+  .konz-split__form {
+    padding: 24px 16px;
+  }
+}
+  
+
+.konz-split__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -4px;
+  font-size: 13px;
+}
+.konz-split__remember {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px;
- font-size: 0.85rem;
+  color: #555;
   cursor: pointer;
+  font-weight: 500;
 }
-
-.dropdown-item input {
+.konz-split__remember input {
+  width: 16px !important; height: 16px !important;
   accent-color: #33691e;
-  width: 16px;
-  height: 16px;
+  margin: 0;
+  padding: 0 !important;
+}
+.konz-split__forgot {
+  color: #33691e;
+  font-weight: 600;
+  text-decoration: none;
+}
+.konz-split__forgot:hover { text-decoration: underline; }
+
+
+/* Register uses the same .konz-split shell as login.
+   Only the RIGHT panel and inner form differ. */
+
+/* Wider, taller right panel for register — flat, no card */
+.konz-split__form.konz-reg {
+  padding: 36px 44px;
+  justify-content: flex-start;
+  overflow-y: auto;
+  max-height: 100vh;
 }
 
-.custom-select-box {
+/* Section header inside the register form */
+.konz-reg__section-label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #1b5e20;
+  margin: 24px 0 14px;
+  padding: 0 0 8px 12px;
+  border-bottom: 1.5px solid #c5e1a5;
+  color: #2e7d32;
+  margin: 22px 0 12px;
+  padding: 0 0 8px 0;
+  border-bottom: 1px solid #dbe9d2;
+  display: block;
   position: relative;
-  height: 43px;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 8px 36px 8px 12px; /* extra right space for arrow */
+}
+
+.konz-reg__section-label:first-of-type { margin-top: 0; }
+/* 2-column and 3-column field grids */
+.konz-reg__grid {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+}
+.konz-reg__grid--2 { grid-template-columns: 1fr 1fr; }
+.konz-reg__grid--3 { grid-template-columns: 0.6fr 1fr 1fr; }
+.konz-reg__grid--4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+.konz-reg__col-full { grid-column: 1 / -1; }
+
+/* Thin select for salutation */
+.konz-reg__salutation .konz-field__input {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+/* Language multi-select inside konz-split */
+.konz-reg__lang-wrap { position: relative; width: 100%; }
+
+.konz-reg__lang-box {
+  height: auto;
+  min-height: 50px;
+  background: #fff;
+  border: 2px solid #dbe9d2;
+  border-radius: 12px;
+  padding: 14px 36px 14px 16px;
   display: flex;
   align-items: center;
-  font-size: 0.85rem;
+  font-size: 14px;
+  color: #1e3a0b;
   cursor: pointer;
   box-sizing: border-box;
+  position: relative;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: inherit;
 }
 
-/* 🔥 FAKE NATIVE SELECT ARROW */
-.custom-select-box::after {
+.konz-reg__lang-box:focus-within,
+.konz-reg__lang-box:hover { border-color: #33691e; }
+
+.konz-reg__lang-box::after {
   content: "";
   position: absolute;
-  right: 10px;              /* 🔥 match select spacing */
+  right: 12px;
   top: 50%;
-  width: 14px;              /* 🔥 slightly bigger */
+  width: 14px;
   height: 14px;
   transform: translateY(-50%);
   pointer-events: none;
-
   background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M6 8L10 12L14 8' stroke='%2333691e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+.konz-reg__lang-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #dbe9d2;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  z-index: 200;
+  padding: 6px;
+}
+
+.konz-reg__lang-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #1e3a0b;
+  font-family: inherit;
+}
+.konz-reg__lang-item:hover { background: #f1f8e9; }
+.konz-reg__lang-item input[type="checkbox"] {
+  accent-color: #33691e;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+/* Register title override (slightly smaller to fit) */
+.konz-reg .konz-split__title { font-size: 26px; margin-bottom: 2px; }
+.konz-reg .konz-split__subtitle { margin-bottom: 4px; }
+
+/* Divider line between sections */
+.konz-reg__divider {
+  border: none;
+  border-top: 1px solid #e8f5e9;
+  margin: 8px 0 0;
+}
+
+/* ── RESPONSIVE ─────────────────────────── */
+
+/* Tablet */
+@media (max-width: 860px) {
+  .konz-split__form.konz-reg {
+    padding: 28px 20px;
+    max-height: none;
+  }
+  .konz-reg__grid--3 { grid-template-columns: 1fr 1fr; }
+  .konz-reg__grid--4 { grid-template-columns: 1fr 1fr; }
+}
+
+/* Mobile */
+@media (max-width: 540px) {
+  .konz-split__form.konz-reg {
+    padding: 24px 14px;
+  }
+  .konz-reg__grid--2,
+  .konz-reg__grid--3,
+  .konz-reg__grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+.konz-split__toggle {
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+}
+.konz-split__toggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

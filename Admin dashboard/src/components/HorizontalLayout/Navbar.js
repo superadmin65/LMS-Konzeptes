@@ -1,14 +1,14 @@
-import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
-import { Row, Col, Collapse } from "reactstrap";
-import { Link } from "react-router-dom";
-import withRouter from "components/Common/withRouter";
-import classname from "classnames";
+import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Collapse } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import withRouter from 'components/Common/withRouter';
+import classname from 'classnames';
 
 //i18n
-import { withTranslation } from "react-i18next";
+import { withTranslation } from 'react-i18next';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 const Navbar = (props) => {
   const [dashboard, setdashboard] = useState(false);
@@ -36,8 +36,8 @@ const Navbar = (props) => {
 
   useEffect(() => {
     var matchingMenuItem = null;
-    var ul = document.getElementById("navigation");
-    var items = ul.getElementsByTagName("a");
+    var ul = document.getElementById('navigation');
+    var items = ul.getElementsByTagName('a');
     removeActivation(items);
     for (var i = 0; i < items.length; ++i) {
       if (window.location.pathname === items[i].pathname) {
@@ -54,36 +54,36 @@ const Navbar = (props) => {
     for (var i = 0; i < items.length; ++i) {
       var item = items[i];
       const parent = items[i].parentElement;
-      if (item && item.classList.contains("active")) {
-        item.classList.remove("active");
+      if (item && item.classList.contains('active')) {
+        item.classList.remove('active');
       }
       if (parent) {
-        if (parent.classList.contains("active")) {
-          parent.classList.remove("active");
+        if (parent.classList.contains('active')) {
+          parent.classList.remove('active');
         }
       }
     }
   };
 
   function activateParentDropdown(item) {
-    item.classList.add("active");
+    item.classList.add('active');
     const parent = item.parentElement;
     if (parent) {
-      parent.classList.add("active"); // li
+      parent.classList.add('active'); // li
       const parent2 = parent.parentElement;
-      parent2.classList.add("active"); // li
+      parent2.classList.add('active'); // li
       const parent3 = parent2.parentElement;
       if (parent3) {
-        parent3.classList.add("active"); // li
+        parent3.classList.add('active'); // li
         const parent4 = parent3.parentElement;
         if (parent4) {
-          parent4.classList.add("active"); // li
+          parent4.classList.add('active'); // li
           const parent5 = parent4.parentElement;
           if (parent5) {
-            parent5.classList.add("active"); // li
+            parent5.classList.add('active'); // li
             const parent6 = parent5.parentElement;
             if (parent6) {
-              parent6.classList.add("active"); // li
+              parent6.classList.add('active'); // li
             }
           }
         }
@@ -116,26 +116,26 @@ const Navbar = (props) => {
                     to="/dashboard"
                   >
                     <i className="bx bx-home-circle me-2"></i>
-                    {props.t("Dashboard")} {props.menuOpen}
+                    {props.t('Dashboard')} {props.menuOpen}
                     <div className="arrow-down"></div>
                   </Link>
                   <div
-                    className={classname("dropdown-menu", { show: dashboard })}
+                    className={classname('dropdown-menu', { show: dashboard })}
                   >
                     <Link to="/dashboard" className="dropdown-item">
-                      {props.t("Default")}
+                      {props.t('Default')}
                     </Link>
                     <Link to="/dashboard-saas" className="dropdown-item">
-                      {props.t("Saas")}
+                      {props.t('Saas')}
                     </Link>
                     <Link to="/dashboard-crypto" className="dropdown-item">
-                      {props.t("Crypto")}
+                      {props.t('Crypto')}
                     </Link>
                     <Link to="/blog" className="dropdown-item">
-                      {props.t("Blog")}
+                      {props.t('Blog')}
                     </Link>
                     <Link to="/dashboard-job" className="dropdown-item">
-                      {props.t("Jobs")}
+                      {props.t('Jobs')}
                     </Link>
                   </div>
                 </li>
@@ -150,13 +150,13 @@ const Navbar = (props) => {
                     className="nav-link dropdown-toggle arrow-none"
                   >
                     <i className="bx bx-tone me-2"></i>
-                    {props.t("UI Elements")} <div className="arrow-down"></div>
+                    {props.t('UI Elements')} <div className="arrow-down"></div>
                   </Link>
 
                   <div
                     className={classname(
-                      "dropdown-menu mega-dropdown-menu dropdown-menu-left dropdown-mega-menu-xl",
-                      { show: ui },
+                      'dropdown-menu mega-dropdown-menu dropdown-menu-left dropdown-mega-menu-xl',
+                      { show: ui }
                     )}
                   >
                     <Row>
@@ -267,17 +267,17 @@ const Navbar = (props) => {
                     className="nav-link dropdown-togglez arrow-none"
                   >
                     <i className="bx bx-customize me-2"></i>
-                    {props.t("Apps")} <div className="arrow-down"></div>
+                    {props.t('Apps')} <div className="arrow-down"></div>
                   </Link>
-                  <div className={classname("dropdown-menu", { show: app })}>
+                  <div className={classname('dropdown-menu', { show: app })}>
                     <Link to="/calendar" className="dropdown-item">
-                      {props.t("Calendar")}
+                      {props.t('Calendar')}
                     </Link>
                     <Link to="/chat" className="dropdown-item">
-                      {props.t("Chat")}
+                      {props.t('Chat')}
                     </Link>
                     <Link to="/apps-filemanager" className="dropdown-item">
-                      {props.t("File Manager")}
+                      {props.t('File Manager')}
                     </Link>
                     <div className="dropdown">
                       <Link
@@ -288,16 +288,16 @@ const Navbar = (props) => {
                           setemail(!email);
                         }}
                       >
-                        {props.t("Email")} <div className="arrow-down"></div>
+                        {props.t('Email')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: email })}
+                        className={classname('dropdown-menu', { show: email })}
                       >
                         <Link to="/email-inbox" className="dropdown-item">
-                          {props.t("Inbox")}
+                          {props.t('Inbox')}
                         </Link>
                         <Link to="/email-read" className="dropdown-item">
-                          {props.t("Read Email")}
+                          {props.t('Read Email')}
                         </Link>
                         <div className="dropdown">
                           <Link
@@ -308,11 +308,11 @@ const Navbar = (props) => {
                               setemail(!email);
                             }}
                           >
-                            <span key="t-email-templates">Templates</span>{" "}
+                            <span key="t-email-templates">Templates</span>{' '}
                             <div className="arrow-down"></div>
                           </Link>
                           <div
-                            className={classname("dropdown-menu", {
+                            className={classname('dropdown-menu', {
                               show: email,
                             })}
                           >
@@ -320,19 +320,19 @@ const Navbar = (props) => {
                               to="/email-template-basic"
                               className="dropdown-item"
                             >
-                              {props.t("Basic Action")}
+                              {props.t('Basic Action')}
                             </Link>
                             <Link
                               to="/email-template-alert"
                               className="dropdown-item"
                             >
-                              {props.t("Alert Email")}
+                              {props.t('Alert Email')}
                             </Link>
                             <Link
                               to="/email-template-billing"
                               className="dropdown-item"
                             >
-                              {props.t("Billing Email")}
+                              {props.t('Billing Email')}
                             </Link>
                           </div>
                         </div>
@@ -347,11 +347,11 @@ const Navbar = (props) => {
                           setecommerce(!ecommerce);
                         }}
                       >
-                        {props.t(" Ecommerce")}{" "}
+                        {props.t(' Ecommerce')}{' '}
                         <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", {
+                        className={classname('dropdown-menu', {
                           show: ecommerce,
                         })}
                       >
@@ -359,40 +359,42 @@ const Navbar = (props) => {
                           to="/ecommerce-products"
                           className="dropdown-item"
                         >
-                          {props.t("Products")}
+                          {props.t('Products')}
                         </Link>
                         <Link
                           to="/ecommerce-product-detail/1"
                           className="dropdown-item"
                         >
-                          {props.t("Product Detail")}
+                          {props.t('Product Detail')}
                         </Link>
-                        <Link to="/ecommerce-orders" className="dropdown-item">
-                          {props.t("Orders")}
+                        {/* <Link to="/ecommerce-orders" className="dropdown-item"> */}
+                        <Link to="/staff-list" className="dropdown-item">
+                          {props.t('Orders')}
                         </Link>
                         <Link
-                          to="/ecommerce-customers"
+                          // to="/ecommerce-customers"
+                          to="/Registration-List"
                           className="dropdown-item"
                         >
-                          {props.t("Customers")}
+                          {props.t('Customers')}
                         </Link>
                         <Link to="/ecommerce-cart" className="dropdown-item">
-                          {props.t("Cart")}
+                          {props.t('Cart')}
                         </Link>
                         <Link
                           to="/ecommerce-checkout"
                           className="dropdown-item"
                         >
-                          {props.t("Checkout")}
+                          {props.t('Checkout')}
                         </Link>
                         <Link to="/ecommerce-shops" className="dropdown-item">
-                          {props.t("Shops")}
+                          {props.t('Shops')}
                         </Link>
                         <Link
                           to="/ecommerce-add-product"
                           className="dropdown-item"
                         >
-                          {props.t("Add Product")}
+                          {props.t('Add Product')}
                         </Link>
                       </div>
                     </div>
@@ -406,37 +408,37 @@ const Navbar = (props) => {
                           setcrypto(!crypto);
                         }}
                       >
-                        {props.t("Crypto")} <div className="arrow-down"></div>
+                        {props.t('Crypto')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: crypto })}
+                        className={classname('dropdown-menu', { show: crypto })}
                       >
                         <Link to="/crypto-wallet" className="dropdown-item">
-                          {props.t("Wallet")}
+                          {props.t('Wallet')}
                         </Link>
                         <Link to="/crypto-buy-sell" className="dropdown-item">
-                          {props.t("Buy/Sell")}
+                          {props.t('Buy/Sell')}
                         </Link>
                         <Link to="/crypto-exchange" className="dropdown-item">
-                          {props.t("Exchange")}
+                          {props.t('Exchange')}
                         </Link>
                         <Link to="/crypto-lending" className="dropdown-item">
-                          {props.t("Lending")}
+                          {props.t('Lending')}
                         </Link>
                         <Link to="/crypto-orders" className="dropdown-item">
-                          {props.t("Orders")}
+                          {props.t('Orders')}
                         </Link>
                         <Link
                           to="/crypto-kyc-application"
                           className="dropdown-item"
                         >
-                          {props.t("KYC Application")}
+                          {props.t('KYC Application')}
                         </Link>
                         <Link
                           to="/crypto-ico-landing"
                           className="dropdown-item"
                         >
-                          {props.t("ICO Landing")}
+                          {props.t('ICO Landing')}
                         </Link>
                       </div>
                     </div>
@@ -450,24 +452,24 @@ const Navbar = (props) => {
                           setproject(!project);
                         }}
                       >
-                        {props.t("Projects")} <div className="arrow-down"></div>
+                        {props.t('Projects')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", {
+                        className={classname('dropdown-menu', {
                           show: project,
                         })}
                       >
                         <Link to="/projects-grid" className="dropdown-item">
-                          {props.t("Projects Grid")}
+                          {props.t('Projects Grid')}
                         </Link>
                         <Link to="/projects-list" className="dropdown-item">
-                          {props.t("Projects List")}
+                          {props.t('Projects List')}
                         </Link>
                         <Link to="/projects-overview" className="dropdown-item">
-                          {props.t("Project Overview")}
+                          {props.t('Project Overview')}
                         </Link>
                         <Link to="/projects-create" className="dropdown-item">
-                          {props.t("Create New")}
+                          {props.t('Create New')}
                         </Link>
                       </div>
                     </div>
@@ -480,16 +482,16 @@ const Navbar = (props) => {
                           settask(!task);
                         }}
                       >
-                        {props.t("Tasks")} <div className="arrow-down"></div>
+                        {props.t('Tasks')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: task })}
+                        className={classname('dropdown-menu', { show: task })}
                       >
                         <Link to="/tasks-list" className="dropdown-item">
-                          {props.t("Task List")}
+                          {props.t('Task List')}
                         </Link>
                         <Link to="/tasks-create" className="dropdown-item">
-                          {props.t("Create Task")}
+                          {props.t('Create Task')}
                         </Link>
                       </div>
                     </div>
@@ -502,21 +504,21 @@ const Navbar = (props) => {
                           setcontact(!contact);
                         }}
                       >
-                        {props.t("Contacts")} <div className="arrow-down"></div>
+                        {props.t('Contacts')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", {
+                        className={classname('dropdown-menu', {
                           show: contact,
                         })}
                       >
                         <Link to="/contacts-grid" className="dropdown-item">
-                          {props.t("User Grid")}
+                          {props.t('User Grid')}
                         </Link>
                         <Link to="/contacts-list" className="dropdown-item">
-                          {props.t("User List")}
+                          {props.t('User List')}
                         </Link>
                         <Link to="/contacts-profile" className="dropdown-item">
-                          {props.t("Profile")}
+                          {props.t('Profile')}
                         </Link>
                       </div>
                     </div>
@@ -529,21 +531,21 @@ const Navbar = (props) => {
                           setBlog(!blog);
                         }}
                       >
-                        {props.t("Blog")} <div className="arrow-down"></div>
+                        {props.t('Blog')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", {
+                        className={classname('dropdown-menu', {
                           show: blog,
                         })}
                       >
                         <Link to="/blog-list" className="dropdown-item">
-                          {props.t("Blog List")}
+                          {props.t('Blog List')}
                         </Link>
                         <Link to="/blog-grid" className="dropdown-item">
-                          {props.t("Blog Grid")}
+                          {props.t('Blog Grid')}
                         </Link>
                         <Link to="/blog-details" className="dropdown-item">
-                          {props.t("Blog Details")}
+                          {props.t('Blog Details')}
                         </Link>
                       </div>
                     </div>
@@ -557,25 +559,25 @@ const Navbar = (props) => {
                           setJob(!job);
                         }}
                       >
-                        {props.t("Jobs")} <div className="arrow-down"></div>
+                        {props.t('Jobs')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: job })}
+                        className={classname('dropdown-menu', { show: job })}
                       >
                         <Link to="/job-list" className="dropdown-item">
-                          {props.t("Job List")}
+                          {props.t('Job List')}
                         </Link>
                         <Link to="/job-grid" className="dropdown-item">
-                          {props.t("Job Grid")}
+                          {props.t('Job Grid')}
                         </Link>
                         <Link to="/job-apply" className="dropdown-item">
-                          {props.t("Job Apply")}
+                          {props.t('Job Apply')}
                         </Link>
                         <Link to="/job-details" className="dropdown-item">
-                          {props.t("Job Details")}
+                          {props.t('Job Details')}
                         </Link>
                         <Link to="/job-categories" className="dropdown-item">
-                          {props.t("Job Catogories")}
+                          {props.t('Job Catogories')}
                         </Link>
 
                         <div className="dropdown">
@@ -587,11 +589,11 @@ const Navbar = (props) => {
                               setCandidate(!candidate);
                             }}
                           >
-                            <span key="t-candidate">Candidate</span>{" "}
+                            <span key="t-candidate">Candidate</span>{' '}
                             <div className="arrow-down"></div>
                           </Link>
                           <div
-                            className={classname("dropdown-menu", {
+                            className={classname('dropdown-menu', {
                               show: candidate,
                             })}
                           >
@@ -599,13 +601,13 @@ const Navbar = (props) => {
                               to="/candidate-list"
                               className="dropdown-item"
                             >
-                              {props.t("List")}
+                              {props.t('List')}
                             </Link>
                             <Link
                               to="/candidate-overview"
                               className="dropdown-item"
                             >
-                              {props.t("Overview")}
+                              {props.t('Overview')}
                             </Link>
                           </div>
                         </div>
@@ -624,10 +626,10 @@ const Navbar = (props) => {
                     }}
                   >
                     <i className="bx bx-collection me-2"></i>
-                    {props.t("Components")} <div className="arrow-down"></div>
+                    {props.t('Components')} <div className="arrow-down"></div>
                   </Link>
                   <div
-                    className={classname("dropdown-menu", { show: component })}
+                    className={classname('dropdown-menu', { show: component })}
                   >
                     <div className="dropdown">
                       <Link
@@ -638,37 +640,37 @@ const Navbar = (props) => {
                           setform(!form);
                         }}
                       >
-                        {props.t("Forms")} <div className="arrow-down"></div>
+                        {props.t('Forms')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: form })}
+                        className={classname('dropdown-menu', { show: form })}
                       >
                         <Link to="/form-elements" className="dropdown-item">
-                          {props.t("Form Elements")}
+                          {props.t('Form Elements')}
                         </Link>
                         <Link to="/form-layouts" className="dropdown-item">
-                          {props.t("Form Layouts")}
+                          {props.t('Form Layouts')}
                         </Link>
                         <Link to="/form-validation" className="dropdown-item">
-                          {props.t("Form Validation")}
+                          {props.t('Form Validation')}
                         </Link>
                         <Link to="/form-advanced" className="dropdown-item">
-                          {props.t("Form Advanced")}
+                          {props.t('Form Advanced')}
                         </Link>
                         <Link to="/form-editors" className="dropdown-item">
-                          {props.t("Form Editors")}
+                          {props.t('Form Editors')}
                         </Link>
                         <Link to="/form-uploads" className="dropdown-item">
-                          {props.t("Form File Upload")}{" "}
+                          {props.t('Form File Upload')}{' '}
                         </Link>
                         <Link to="/form-repeater" className="dropdown-item">
-                          {props.t("Form Repeater")}
+                          {props.t('Form Repeater')}
                         </Link>
                         <Link to="/form-wizard" className="dropdown-item">
-                          {props.t("Form Wizard")}
+                          {props.t('Form Wizard')}
                         </Link>
                         <Link to="/form-mask" className="dropdown-item">
-                          {props.t("Form Mask")}
+                          {props.t('Form Mask')}
                         </Link>
                       </div>
                     </div>
@@ -681,22 +683,23 @@ const Navbar = (props) => {
                           settable(!table);
                         }}
                       >
-                        {props.t("Tables")} <div className="arrow-down"></div>
+                        {props.t('Tables')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: table })}
+                        className={classname('dropdown-menu', { show: table })}
                       >
                         <Link to="/tables-basic" className="dropdown-item">
-                          {props.t("Basic Tables")}
+                          {props.t('Basic Tables')}
                         </Link>
                         <Link to="/tables-datatable" className="dropdown-item">
-                          {props.t("Data Tables")}
+                          {props.t('Data Tables')}
                         </Link>
-                        <Link to="/tables-responsive" className="dropdown-item">
-                          {props.t("Responsive Table")}
+                        {/* <Link to="/tables-responsive" className="dropdown-item"> */}
+                        <Link to="/Performance-table" className="dropdown-item">
+                          {props.t('Responsive Table')}
                         </Link>
                         <Link to="/tables-dragndrop" className="dropdown-item">
-                          {props.t("Drag & Drop Table")}
+                          {props.t('Drag & Drop Table')}
                         </Link>
                       </div>
                     </div>
@@ -709,36 +712,36 @@ const Navbar = (props) => {
                           setchart(!chart);
                         }}
                       >
-                        {props.t("Charts")} <div className="arrow-down"></div>
+                        {props.t('Charts')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: chart })}
+                        className={classname('dropdown-menu', { show: chart })}
                       >
                         <Link to="/apex-charts" className="dropdown-item">
-                          {" "}
-                          {props.t("Apex charts")}
+                          {' '}
+                          {props.t('Apex charts')}
                         </Link>
                         <Link to="/e-charts" className="dropdown-item">
-                          {" "}
-                          {props.t("E Chart")}
+                          {' '}
+                          {props.t('E Chart')}
                         </Link>
                         <Link to="/chartjs-charts" className="dropdown-item">
-                          {" "}
-                          {props.t("Chartjs Chart")}
+                          {' '}
+                          {props.t('Chartjs Chart')}
                         </Link>
                         <Link to="/chartist-charts" className="dropdown-item">
-                          {" "}
-                          {props.t("Chartist Chart")}
+                          {' '}
+                          {props.t('Chartist Chart')}
                         </Link>
                         <Link to="/charts-knob" className="dropdown-item">
-                          {props.t("Knob Charts")}
+                          {props.t('Knob Charts')}
                         </Link>
                         <Link to="/re-charts" className="dropdown-item">
-                          {props.t("Re Chart")}
+                          {props.t('Re Chart')}
                         </Link>
                         <Link to="/sparkline-charts" className="dropdown-item">
-                          {" "}
-                          {props.t("Sparkline Chart")}
+                          {' '}
+                          {props.t('Sparkline Chart')}
                         </Link>
                       </div>
                     </div>
@@ -751,25 +754,25 @@ const Navbar = (props) => {
                           seticon(!icon);
                         }}
                       >
-                        {props.t("Icons")} <div className="arrow-down"></div>
+                        {props.t('Icons')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: icon })}
+                        className={classname('dropdown-menu', { show: icon })}
                       >
                         <Link to="/icons-boxicons" className="dropdown-item">
-                          {props.t("Boxicons")}
+                          {props.t('Boxicons')}
                         </Link>
                         <Link
                           to="/icons-materialdesign"
                           className="dropdown-item"
                         >
-                          {props.t("Material Design")}
+                          {props.t('Material Design')}
                         </Link>
                         <Link to="/icons-dripicons" className="dropdown-item">
-                          {props.t("Dripicons")}
+                          {props.t('Dripicons')}
                         </Link>
                         <Link to="/icons-fontawesome" className="dropdown-item">
-                          {props.t("Font awesome")}{" "}
+                          {props.t('Font awesome')}{' '}
                         </Link>
                       </div>
                     </div>
@@ -782,19 +785,19 @@ const Navbar = (props) => {
                           setmap(!map);
                         }}
                       >
-                        {props.t("Maps")} <div className="arrow-down"></div>
+                        {props.t('Maps')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: map })}
+                        className={classname('dropdown-menu', { show: map })}
                       >
                         <Link to="/maps-google" className="dropdown-item">
-                          {props.t("Google Maps")}{" "}
+                          {props.t('Google Maps')}{' '}
                         </Link>
                         <Link to="/maps-vector" className="dropdown-item">
-                          {props.t("Vector Maps")}{" "}
+                          {props.t('Vector Maps')}{' '}
                         </Link>
                         <Link to="/maps-leaflet" className="dropdown-item">
-                          {props.t("Leaflet Maps")}{" "}
+                          {props.t('Leaflet Maps')}{' '}
                         </Link>
                       </div>
                     </div>
@@ -811,9 +814,9 @@ const Navbar = (props) => {
                     }}
                   >
                     <i className="bx bx-file me-2"></i>
-                    {props.t("Extra pages")} <div className="arrow-down"></div>
+                    {props.t('Extra pages')} <div className="arrow-down"></div>
                   </Link>
-                  <div className={classname("dropdown-menu", { show: extra })}>
+                  <div className={classname('dropdown-menu', { show: extra })}>
                     <div className="dropdown">
                       <Link
                         to="/#"
@@ -823,21 +826,22 @@ const Navbar = (props) => {
                           setinvoice(!invoice);
                         }}
                       >
-                        {props.t("Invoices")} <div className="arrow-down"></div>
+                        {props.t('Invoices')} <div className="arrow-down"></div>
                       </Link>
                       <Link to="/manage-cards" className="dropdown-item">
-                        {props.t("Manage Cards")}
+                        {props.t('Manage Cards')}
                       </Link>
                       <div
-                        className={classname("dropdown-menu", {
+                        className={classname('dropdown-menu', {
                           show: invoice,
                         })}
                       >
-                        <Link to="/invoices-list" className="dropdown-item">
-                          {props.t("Invoice List")}
+                        {/* <Link to="/invoices-list" className="dropdown-item"> */}
+                        <Link to="/Exercise-type" className="dropdown-item">
+                          {props.t('Invoice List')}
                         </Link>
-                        <Link to="/invoices-detail" className="dropdown-item">
-                          {props.t("Invoice Detail")}
+                        <Link to="/Exercise-detail" className="dropdown-item">
+                          {props.t('Invoice Detail')}
                         </Link>
                       </div>
                     </div>
@@ -851,71 +855,71 @@ const Navbar = (props) => {
                           setauth(!auth);
                         }}
                       >
-                        {props.t("Authentication")}{" "}
+                        {props.t('Authentication')}{' '}
                         <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", { show: auth })}
+                        className={classname('dropdown-menu', { show: auth })}
                       >
                         <Link to="/pages-login" className="dropdown-item">
-                          {props.t("Login")}
+                          {props.t('Login')}
                         </Link>
                         <Link to="/pages-login-2" className="dropdown-item">
-                          {props.t("Login 2")}
+                          {props.t('Login 2')}
                         </Link>
                         <Link to="/pages-register" className="dropdown-item">
-                          {props.t("Register")}
+                          {props.t('Register')}
                         </Link>
                         <Link to="/pages-register-2" className="dropdown-item">
-                          {props.t("Register 2")}
+                          {props.t('Register 2')}
                         </Link>
                         <Link to="/page-recoverpw" className="dropdown-item">
-                          {props.t("Recover Password")}
+                          {props.t('Recover Password')}
                         </Link>
                         <Link to="/page-recoverpw-2" className="dropdown-item">
-                          {props.t("Recover Password 2")}
+                          {props.t('Recover Password 2')}
                         </Link>
                         <Link to="/auth-lock-screen" className="dropdown-item">
-                          {props.t("Lock Screen")}
+                          {props.t('Lock Screen')}
                         </Link>
                         <Link
                           to="/auth-lock-screen-2"
                           className="dropdown-item"
                         >
-                          {props.t("Lock Screen 2")}
+                          {props.t('Lock Screen 2')}
                         </Link>
                         <Link to="/page-confirm-mail" className="dropdown-item">
-                          {props.t("Confirm Mail")}
+                          {props.t('Confirm Mail')}
                         </Link>
                         <Link
                           to="/page-confirm-mail-2"
                           className="dropdown-item"
                         >
-                          {props.t("Confirm Mail 2")}
+                          {props.t('Confirm Mail 2')}
                         </Link>
                         <Link
                           to="/auth-email-verification"
                           className="dropdown-item"
                         >
-                          {props.t("Email Verification")}
+                          {props.t('Email Verification')}
                         </Link>
                         <Link
                           to="/auth-email-verification-2"
                           className="dropdown-item"
                         >
-                          {props.t("Email Verification 2")}
+                          {props.t('Email Verification 2')}
                         </Link>
                         <Link
                           to="/auth-two-step-verification"
                           className="dropdown-item"
                         >
-                          {props.t("Two Step Verification")}
+                          {props.t('Two Step Verification')}
                         </Link>
                         <Link
                           to="/auth-two-step-verification-2"
                           className="dropdown-item"
                         >
-                          {props.t("Two Step Verification 2")}
+                          {props.t('Two Step Verification 2')}
                         </Link>
                       </div>
                     </div>
@@ -929,36 +933,36 @@ const Navbar = (props) => {
                           setutility(!utility);
                         }}
                       >
-                        {props.t("Utility")} <div className="arrow-down"></div>
+                        {props.t('Utility')} <div className="arrow-down"></div>
                       </Link>
                       <div
-                        className={classname("dropdown-menu", {
+                        className={classname('dropdown-menu', {
                           show: utility,
                         })}
                       >
                         <Link to="/pages-starter" className="dropdown-item">
-                          {props.t("Starter Page")}
+                          {props.t('Starter Page')}
                         </Link>
                         <Link to="/pages-maintenance" className="dropdown-item">
-                          {props.t("Maintenance")}
+                          {props.t('Maintenance')}
                         </Link>
                         <Link to="/pages-comingsoon" className="dropdown-item">
-                          {props.t("Coming Soon")}
+                          {props.t('Coming Soon')}
                         </Link>
                         <Link to="/pages-timeline" className="dropdown-item">
-                          {props.t("Timeline")}
+                          {props.t('Timeline')}
                         </Link>
                         <Link to="/pages-faqs" className="dropdown-item">
-                          {props.t("FAQs")}
+                          {props.t('FAQs')}
                         </Link>
                         <Link to="/pages-pricing" className="dropdown-item">
-                          {props.t("Pricing")}
+                          {props.t('Pricing')}
                         </Link>
                         <Link to="/pages-404" className="dropdown-item">
-                          {props.t("Error 404")}
+                          {props.t('Error 404')}
                         </Link>
                         <Link to="/pages-500" className="dropdown-item">
-                          {props.t("Error 500")}
+                          {props.t('Error 500')}
                         </Link>
                       </div>
                     </div>
@@ -986,5 +990,5 @@ const mapStatetoProps = (state) => {
 };
 
 export default withRouter(
-  connect(mapStatetoProps, {})(withTranslation()(Navbar)),
+  connect(mapStatetoProps, {})(withTranslation()(Navbar))
 );

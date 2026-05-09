@@ -12,8 +12,9 @@ import EcommerceOrders from "../pages/Ecommerce/EcommerceOrders/index";
 import EcommerceCustomers from "../pages/Ecommerce/EcommerceCustomers/index";
 
 //Invoices
-import InvoicesList from "../pages/Invoices/invoices-list";
-import InvoiceDetail from "../pages/Invoices/invoices-detail";
+import InvoicesList from "../pages/Invoices/Exercise-list";
+import FieldManagement from "../pages/Invoices/Field-list";
+import InvoiceDetail from "../pages/Invoices/Exercise-detail";
 
 // Authentication related pages
 import Login from "../pages/Authentication/Login";
@@ -47,46 +48,25 @@ import ResponsiveTables from "../pages/Tables/ResponsiveTables";
 
 import ManageCards from "../pages/Ecommerce/ManageCard";
 
-// const authProtectedRoutes = [
-//   { path: "/admin/dashboard", component: <Dashboard /> },
-
-//   { path: "/admin/manage-cards", component: <ManageCards /> },
-
-//   { path: "/profile", component: <UserProfile /> },
-
-//   { path: "/admin/ecommerce-orders", component: <EcommerceOrders /> },
-//   { path: "/admin/ecommerce-customers", component: <EcommerceCustomers /> },
-
-//   //Tables
-//   { path: "/admin/tables-responsive", component: <ResponsiveTables /> },
-
-//   //Invoices
-//   { path: "/admin/invoices-list", component: <InvoicesList /> },
-//   { path: "/invoices-detail/:id", component: <InvoiceDetail /> },
-//   { path: "/invoices-detail", component: <InvoiceDetail /> },
-
-//   {
-//     path: "/",
-//     exact: true,
-//     component: <Navigate to="/admin/dashboard" />,
-//   },
-// ];
-
 const authProtectedRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
   { path: "/manage-cards", component: <ManageCards /> },
   { path: "/profile", component: <UserProfile /> },
-  { path: "/ecommerce-orders", component: <EcommerceOrders /> },
-  { path: "/ecommerce-customers", component: <EcommerceCustomers /> },
+  // { path: '/ecommerce-orders', component: <EcommerceOrders /> },
+  { path: "/staff-list", component: <EcommerceOrders /> },
+  // { path: '/ecommerce-customers', component: <EcommerceCustomers /> },
+  { path: "Registration-List", component: <EcommerceCustomers /> },
 
   //Invoices
-  { path: "/invoices-list", component: <InvoicesList /> },
-  { path: "/invoices-detail/:id", component: <InvoiceDetail /> },
-  { path: "/invoices-detail", component: <InvoiceDetail /> },
+  // { path: '/invoices-list', component: <InvoicesList /> },
+  { path: "Exercise-type", component: <InvoicesList /> },
+  { path: "/Exercise-detail/:id", component: <InvoiceDetail /> },
+  { path: "/Exercise-detail", component: <InvoiceDetail /> },
+  { path: "/Field-list", component: <FieldManagement /> },
 
   //Tables
-  { path: "/tables-responsive", component: <ResponsiveTables /> },
-
+  // { path: '/tables-responsive', component: <ResponsiveTables /> },
+  { path: "/Performance-table", component: <ResponsiveTables /> },
   {
     path: "/",
     exact: true,

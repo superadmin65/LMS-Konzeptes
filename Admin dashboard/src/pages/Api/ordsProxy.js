@@ -2,7 +2,7 @@
 
 export default async function handler(req, res) {
   try {
-    const ORDS_URL = "http://localhost:8080/ords/lms/mcq/data/questions";
+    const ORDS_URL = "http://localhost:8080/ords/dev/mcq/data/questions";
 
     const response = await fetch(ORDS_URL, {
       method: req.method,

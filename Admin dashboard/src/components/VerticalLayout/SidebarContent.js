@@ -153,19 +153,22 @@ const SidebarContent = (props) => {
               </Link>
             </li>
             <li>
-              <Link to="/tables-responsive">
+              {/* <Link to="/tables-responsive"> */}
+              <Link to="/Performance-table">
                 <i className="bx bx-line-chart"></i>
                 <span>{props.t("Performance Tables")}</span>
               </Link>
             </li>
             <li>
-              <Link to="/ecommerce-orders">
+              {/* <Link to="/ecommerce-orders"> */}
+              <Link to="/staff-list">
                 <i className="bx bx-group"></i>
                 <span>{props.t("Staff")}</span>
               </Link>
             </li>
             <li>
-              <Link to="/ecommerce-customers">
+              {/* <Link to="/ecommerce-customers"> */}
+              <Link to="/Registration-List">
                 <i className="bx bx-clipboard"></i>
                 <span>{props.t("Registration")}</span>
               </Link>
@@ -182,7 +185,13 @@ const SidebarContent = (props) => {
                 </li>
 
                 <li>
-                  <Link to="/invoices-list">{props.t("Exercise type")}</Link>
+                  {/* <Link to="/invoices-list">{props.t('Exercise type')}</Link> */}
+                  <Link to="/Exercise-type">{props.t("Exercise type")}</Link>
+                </li>
+
+                <li>
+                  {/* <Link to="/invoices-list">{props.t('Exercise type')}</Link> */}
+                  <Link to="/Field-list">{props.t("Field List")}</Link>
                 </li>
               </ul>
             </li>

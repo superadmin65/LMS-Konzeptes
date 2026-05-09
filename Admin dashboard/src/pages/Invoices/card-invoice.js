@@ -48,7 +48,7 @@ const CardInvoice = ({ data }) => {
               <Col lg="8">
                 <div>
                   <Link
-                    to={"/invoices-detail/" + data.id}
+                    to={"/Exercise-detail/" + data.id}
                     className="d-block text-primary text-decoration-underline mb-2"
                   >
                     Invoice #{data.invoiceID}

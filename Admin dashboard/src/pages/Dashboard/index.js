@@ -28,7 +28,7 @@ import WelcomeComp from "./WelcomeComp";
 // import SocialSource from "./SocialSource";
 // import ActivityComp from "./ActivityComp";
 // import TopCities from "./TopCities";
-import LatestTranaction from "./LatestTranaction";
+import LatestTranaction from "./Registration-list";
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";

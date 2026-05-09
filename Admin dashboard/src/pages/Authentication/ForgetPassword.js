@@ -1,5 +1,5 @@
-import PropTypes from "prop-types";
-import React from "react";
+import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Row,
   Col,
@@ -11,27 +11,27 @@ import {
   Input,
   Label,
   Form,
-} from "reactstrap";
+} from 'reactstrap';
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import withRouter from "components/Common/withRouter";
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import withRouter from 'components/Common/withRouter';
 
 // Formik Validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
 
 // action
-import { userForgetPassword } from "../../store/actions";
+import { userForgetPassword } from '../../store/actions';
 
 // import images
-import profile from "../../assets/images/profile-img.png";
-import logo from "../../assets/images/logo.svg";
+import profile from '../../assets/images/profile-img.png';
+import logo from '../../assets/images/logo.svg';
 
-const ForgetPasswordPage = props => {
+const ForgetPasswordPage = (props) => {
   //meta title
-  document.title = "Forget Password | Skote - React Admin & Dashboard Template";
+  document.title = 'Forget Password | Skote - React Admin & Dashboard Template';
 
   const dispatch = useDispatch();
 
@@ -40,17 +40,17 @@ const ForgetPasswordPage = props => {
     enableReinitialize: true,
 
     initialValues: {
-      email: "",
+      email: '',
     },
     validationSchema: Yup.object({
-      email: Yup.string().required("Please Enter Your Email"),
+      email: Yup.string().required('Please Enter Your Email'),
     }),
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(userForgetPassword(values, props.history));
     },
   });
 
-  const { forgetError, forgetSuccessMsg } = useSelector(state => ({
+  const { forgetError, forgetSuccessMsg } = useSelector((state) => ({
     forgetError: state.ForgetPassword.forgetError,
     forgetSuccessMsg: state.ForgetPassword.forgetSuccessMsg,
   }));
@@ -97,19 +97,19 @@ const ForgetPasswordPage = props => {
                   </div>
                   <div className="p-2">
                     {forgetError && forgetError ? (
-                      <Alert color="danger" style={{ marginTop: "13px" }}>
+                      <Alert color="danger" style={{ marginTop: '13px' }}>
                         {forgetError}
                       </Alert>
                     ) : null}
                     {forgetSuccessMsg ? (
-                      <Alert color="success" style={{ marginTop: "13px" }}>
+                      <Alert color="success" style={{ marginTop: '13px' }}>
                         {forgetSuccessMsg}
                       </Alert>
                     ) : null}
 
                     <Form
                       className="form-horizontal"
-                      onSubmit={e => {
+                      onSubmit={(e) => {
                         e.preventDefault();
                         validation.handleSubmit();
                         return false;
@@ -124,7 +124,7 @@ const ForgetPasswordPage = props => {
                           type="email"
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
-                          value={validation.values.email || ""}
+                          value={validation.values.email || ''}
                           invalid={
                             validation.touched.email && validation.errors.email
                               ? true
@@ -153,12 +153,12 @@ const ForgetPasswordPage = props => {
               </Card>
               <div className="mt-5 text-center">
                 <p>
-                  Go back to{" "}
-                  <Link to="login" className="font-weight-medium text-primary">
+                  Go back to{' '}
+                  <Link to="/login" className="font-weight-medium text-primary">
                     Login
-                  </Link>{" "}
+                  </Link>{' '}
                 </p>
-                <p>© {new Date().getFullYear()} Skote.</p>
+                <p>© {new Date().getFullYear()} Konzepts.</p>
               </div>
             </Col>
           </Row>

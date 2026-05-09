@@ -1,6 +1,7 @@
 // -- --- Start  of recently edited files   -----------------
 // --- Auth ---
 export const POST_LMS_LOGIN = "/auth/login";
+export const GET_PROFILE_IMAGE = "/auth/login";
 
 // --- Dashboard & Analytics ---
 export const GET_LATEST_USERS = "/v1/users/latest";
@@ -11,6 +12,7 @@ export const GET_USER_ANALYTICS = "/user/analytics";
 // --- Staff & Users ---
 export const STAFF_API = "/staff-api/staff";
 export const GET_ALL_USERS = "/v1/users/all";
+export const UPDATE_USER_STATUS = "/v1/users/all";
 
 // --- Manage Cards Endpoints ---
 export const GET_CONFIG = "/v1/konzeptes/config";
@@ -25,7 +27,13 @@ export const SAVE_COMPLETE_WORD = "/admin/save_completeword";
 
 // --- Activity List Endpoints ---
 export const GET_ACTIVITY_LIST = "/admin/list";
+export const GET_FIELD_LIST = "/admin/field-list";
+export const GET_ACTIVITY_DETAIL_JSON = "/admin/list-detail";
 export const DELETE_ACTIVITY = "/admin/delete";
+// Ensure it looks something like this (or just the base path)
+
+// -- Field List Endpoints ---
+export const MANAGE_FIELD_API = "/admin/manage-fields";
 
 // --- Profile Endpoints ---
 export const POST_USER_PROFILE = "/user-api/profile";
@@ -34,6 +42,11 @@ export const POST_USER_PROFILE = "/user-api/profile";
 // --- Card Image & Upload Endpoints ---
 export const GET_CARD_ICON = "/v1/konzeptes/image/icon";
 export const GET_CARD_BG = "/v1/konzeptes/image/bg";
+
+// --- Media Upload Endpoints ---
+// export const ORDS_BASE_URL = "http://localhost:8080/ords/dev";
+
+export const UPLOAD_MEDIA = "/media/upload";
 
 // -----------------   end of recently edited files   -----------------
 //REGISTER

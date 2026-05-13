@@ -9,6 +9,12 @@ export const GET_REGISTRATION_COUNT = "/user/registration-count";
 export const GET_USER_PERFORMANCE = "/user/performance";
 export const GET_USER_ANALYTICS = "/user/analytics";
 
+export const GET_USER_OVERVIEW_STATS = "/user/overview";
+export const GET_PERFORMANCE_ANALYTICS = "/user/performance";
+
+export const GET_USER_PERFORMANCE_ACTIVITY = "/user_activity/performance";
+export const GET_USER_ANALYTICS_ACTIVITTY = "/user_activity/analytics";
+
 // --- Staff & Users ---
 export const STAFF_API = "/staff-api/staff";
 export const GET_ALL_USERS = "/v1/users/all";
@@ -43,7 +49,7 @@ export const POST_USER_PROFILE = "/user-api/profile";
 export const GET_CARD_ICON = "/v1/konzeptes/image/icon";
 export const GET_CARD_BG = "/v1/konzeptes/image/bg";
 
-// --- Media Upload Endpoints ---
+
 // export const ORDS_BASE_URL = "http://localhost:8080/ords/dev";
 
 export const UPLOAD_MEDIA = "/media/upload";

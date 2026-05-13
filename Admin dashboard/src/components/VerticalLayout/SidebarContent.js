@@ -176,7 +176,7 @@ const SidebarContent = (props) => {
 
             <li>
               <Link className="has-arrow ">
-                <i className="bx bx-receipt"></i>
+                <i className="bx bx-task"></i>
                 <span>{props.t("Exercise Management")}</span>
               </Link>
               <ul className="sub-menu">

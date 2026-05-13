@@ -1,586 +1,783 @@
-import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+// // // import React, { useEffect, useState } from 'react';
+// // // import { Container, Row, Col, Card, CardBody, Input } from 'reactstrap';
+// // // import Breadcrumbs from '../../components/Common/Breadcrumb';
+// // // import LatestTranaction from './Registration-list';
+
+// // // // Charts
+// // // import LanguagePieChart from './LanguagePieChart';
+// // // import GradeStackedBarChart from './GradeStackedBarChart';
+// // // import PerformanceAreaChart from './PerformanceAreaChart';
+
+// // // // Helpers
+// // // import { get } from '../../helpers/api_helper';
+// // // import {
+// // //   GET_USER_OVERVIEW_STATS,
+// // //   GET_PERFORMANCE_ANALYTICS,
+// // // } from '../../helpers/url_helper';
+
+// // // const Dashboard = () => {
+// // //   // Filter States
+// // //   const [overviewFilter, setOverviewFilter] = useState('ALL');
+// // //   const [selectedYear, setSelectedYear] = useState(
+// // //     new Date().getFullYear().toString()
+// // //   );
+// // //   const [selectedMonth, setSelectedMonth] = useState('ALL');
+
+// // //   // Data States
+// // //   const [overviewData, setOverviewData] = useState({
+// // //     languages: [],
+// // //     gradesStacked: [],
+// // //   });
+// // //   const [performanceData, setPerformanceData] = useState([]);
+
+// // //   // Fetch 1: Unified Overview (Pie + Bar)
+// // //   const fetchOverview = () => {
+// // //     get(`${GET_USER_OVERVIEW_STATS}?filter=${overviewFilter}`)
+// // //       .then((res) => {
+// // //         if (res && !res.error) {
+// // //           setOverviewData({
+// // //             languages: res.languages || [],
+// // //             gradesStacked: res.gradesStacked || [],
+// // //           });
+// // //         }
+// // //       })
+// // //       .catch((err) => console.error(err));
+// // //   };
+
+// // //   // Fetch 2: Registration Performance (Line/Area)
+// // //   const fetchPerformance = () => {
+// // //     get(
+// // //       `${GET_PERFORMANCE_ANALYTICS}?year=${selectedYear}&month=${selectedMonth}`
+// // //     )
+// // //       .then((res) => {
+// // //         if (res && !res.error) setPerformanceData(res.performance || []);
+// // //       })
+// // //       .catch((err) => console.error(err));
+// // //   };
+
+// // //   useEffect(() => {
+// // //     fetchOverview();
+// // //   }, [overviewFilter]);
+// // //   useEffect(() => {
+// // //     fetchPerformance();
+// // //   }, [selectedYear, selectedMonth]);
+
+// // //   document.title = 'Dashboard | LMS Analytics';
+
+// // //   return (
+// // //     <div className="page-content">
+// // //       <Container fluid>
+// // //         <Breadcrumbs title="Dashboards" breadcrumbItem="LMS Analytics" />
+
+// // //         {/* BLOCK 1: OVERVIEW (Unified Pie + Stacked Bar) */}
+// // //         <Card>
+// // //           <CardBody>
+// // //             <div className="d-flex align-items-center justify-content-between mb-4">
+// // //               <h4 className="card-title mb-0">Registration Overview</h4>
+// // //               <Input
+// // //                 type="select"
+// // //                 className="w-auto"
+// // //                 value={overviewFilter}
+// // //                 onChange={(e) => setOverviewFilter(e.target.value)}
+// // //               >
+// // //                 <option value="ALL">All Records</option>
+// // //                 <option value="MONTH">This Month</option>
+// // //                 <option value="YEAR">This Year</option>
+// // //               </Input>
+// // //             </div>
+// // //             <Row>
+// // //               <Col xl="4">
+// // //                 <LanguagePieChart data={overviewData.languages} />
+// // //               </Col>
+// // //               <Col xl="8">
+// // //                 <GradeStackedBarChart data={overviewData.gradesStacked} />
+// // //               </Col>
+// // //             </Row>
+// // //           </CardBody>
+// // //         </Card>
+
+// // //         {/* BLOCK 2: PERFORMANCE (Line/Area Chart) */}
+// // //         <Card>
+// // //           <CardBody>
+// // //             <div className="d-flex align-items-center justify-content-between mb-4">
+// // //               <h4 className="card-title mb-0">Registration Performance</h4>
+// // //               <div className="d-flex gap-2">
+// // //                 <Input
+// // //                   type="select"
+// // //                   className="w-auto"
+// // //                   value={selectedYear}
+// // //                   onChange={(e) => setSelectedYear(e.target.value)}
+// // //                 >
+// // //                   <option value="2026">2026</option>
+// // //                   <option value="2025">2025</option>
+// // //                 </Input>
+// // //                 <Input
+// // //                   type="select"
+// // //                   className="w-auto"
+// // //                   value={selectedMonth}
+// // //                   onChange={(e) => setSelectedMonth(e.target.value)}
+// // //                 >
+// // //                   <option value="ALL">All Months</option>
+// // //                   {[
+// // //                     { val: '01', name: 'January' },
+// // //                     { val: '02', name: 'February' },
+// // //                     { val: '03', name: 'March' },
+// // //                     { val: '04', name: 'April' },
+// // //                     { val: '05', name: 'May' },
+// // //                   ].map((m) => (
+// // //                     <option key={m.val} value={m.val}>
+// // //                       {m.name}
+// // //                     </option>
+// // //                   ))}
+// // //                 </Input>
+// // //               </div>
+// // //             </div>
+// // //             <PerformanceAreaChart data={performanceData} />
+// // //           </CardBody>
+// // //         </Card>
+
+// // //         <Row>
+// // //           <Col lg="12">
+// // //             <LatestTranaction />
+// // //           </Col>
+// // //         </Row>
+// // //       </Container>
+// // //     </div>
+// // //   );
+// // // };
+
+// // // export default Dashboard;
+
+// // import React, { useEffect, useState } from 'react';
+// // import { Container, Row, Col, Card, CardBody, Input } from 'reactstrap';
+// // import Breadcrumbs from '../../components/Common/Breadcrumb';
+// // import LatestTranaction from './Registration-list';
+
+// // // Charts
+// // import LanguagePieChart from './LanguagePieChart';
+// // import GradeStackedBarChart from './GradeStackedBarChart';
+// // import PerformanceAreaChart from './PerformanceAreaChart';
+
+// // // Helpers
+// // import { get } from '../../helpers/api_helper';
+// // import {
+// //   GET_USER_OVERVIEW_STATS,
+// //   GET_PERFORMANCE_ANALYTICS,
+// // } from '../../helpers/url_helper';
+
+// // const Dashboard = () => {
+// //   const [overviewFilter, setOverviewFilter] = useState('ALL');
+// //   const [selectedYear, setSelectedYear] = useState(
+// //     new Date().getFullYear().toString()
+// //   );
+// //   const [selectedMonth, setSelectedMonth] = useState('ALL');
+
+// //   const [overviewData, setOverviewData] = useState({
+// //     languages: [],
+// //     gradesStacked: [],
+// //   });
+// //   const [performanceData, setPerformanceData] = useState([]);
+
+// //   const fetchOverview = () => {
+// //     get(`${GET_USER_OVERVIEW_STATS}?filter=${overviewFilter}`)
+// //       .then((res) => {
+// //         if (res && !res.error) {
+// //           setOverviewData({
+// //             languages: res.languages || [],
+// //             gradesStacked: res.gradesStacked || [],
+// //           });
+// //         }
+// //       })
+// //       .catch((err) => console.error(err));
+// //   };
+
+// //   const fetchPerformance = () => {
+// //     get(
+// //       `${GET_PERFORMANCE_ANALYTICS}?year=${selectedYear}&month=${selectedMonth}`
+// //     )
+// //       .then((res) => {
+// //         if (res && !res.error) setPerformanceData(res.performance || []);
+// //       })
+// //       .catch((err) => console.error(err));
+// //   };
+
+// //   useEffect(() => {
+// //     fetchOverview();
+// //   }, [overviewFilter]);
+// //   useEffect(() => {
+// //     fetchPerformance();
+// //   }, [selectedYear, selectedMonth]);
+
+// //   return (
+// //     <div className="page-content" style={{ backgroundColor: '#f8f9fa' }}>
+// //       <Container fluid>
+// //         <Breadcrumbs title="Konzeptes" breadcrumbItem="LMS Analytics" />
+
+// //         {/* SECTION 1: REGISTRATION OVERVIEW */}
+// //         <Card
+// //           className="border-0 shadow-sm mb-4"
+// //           style={{ borderRadius: '15px' }}
+// //         >
+// //           <CardBody>
+// //             <div className="d-flex align-items-center justify-content-between mb-4">
+// //               <div>
+// //                 <h4
+// //                   className="card-title mb-1"
+// //                   style={{ fontWeight: '700', color: '#495057' }}
+// //                 >
+// //                   Registration Overview
+// //                 </h4>
+// //                 <p className="text-muted mb-0 font-size-13">
+// //                   Consolidated language and grade analytics
+// //                 </p>
+// //               </div>
+// //               <Input
+// //                 type="select"
+// //                 className="form-select border-primary-subtle fw-semibold text-primary"
+// //                 value={overviewFilter}
+// //                 onChange={(e) => setOverviewFilter(e.target.value)}
+// //                 style={{
+// //                   cursor: 'pointer',
+// //                   width: 'auto',
+// //                   borderRadius: '20px',
+// //                 }}
+// //               >
+// //                 <option value="ALL">All-Time Records</option>
+// //                 <option value="MONTH">Current Month</option>
+// //                 <option value="YEAR">Current Year</option>
+// //               </Input>
+// //             </div>
+
+// //             <Row>
+// //               <Col xl="4">
+// //                 <Card
+// //                   className="shadow-none border-0 h-100"
+// //                   style={{
+// //                     backgroundColor: 'rgba(52, 195, 143, 0.03)',
+// //                     borderRadius: '12px',
+// //                   }}
+// //                 >
+// //                   <CardBody className="text-center">
+// //                     <h5 className="font-size-15 mb-4 fw-bold text-dark">
+// //                       User Languages
+// //                     </h5>
+// //                     <LanguagePieChart data={overviewData.languages} />
+// //                   </CardBody>
+// //                 </Card>
+// //               </Col>
+// //               <Col xl="8">
+// //                 <Card
+// //                   className="shadow-none border-0 h-100"
+// //                   style={{
+// //                     backgroundColor: 'rgba(85, 110, 230, 0.03)',
+// //                     borderRadius: '12px',
+// //                   }}
+// //                 >
+// //                   <CardBody>
+// //                     <h5 className="font-size-15 mb-4 fw-bold text-dark">
+// //                       Users by Grade & Curriculum
+// //                     </h5>
+// //                     <GradeStackedBarChart data={overviewData.gradesStacked} />
+// //                   </CardBody>
+// //                 </Card>
+// //               </Col>
+// //             </Row>
+// //           </CardBody>
+// //         </Card>
+
+// //         {/* SECTION 2: REGISTRATION REPORT */}
+// //         <Card
+// //           className="border-0 shadow-sm mb-4"
+// //           style={{ borderRadius: '15px' }}
+// //         >
+// //           <CardBody>
+// //             <div className="d-flex align-items-center justify-content-between mb-4">
+// //               <h4
+// //                 className="card-title mb-0"
+// //                 style={{ fontWeight: '700', color: '#495057' }}
+// //               >
+// //                 Registration Report
+// //               </h4>
+// //               <div className="d-flex gap-2">
+// //                 <Input
+// //                   type="select"
+// //                   className="form-select border-light shadow-sm"
+// //                   value={selectedYear}
+// //                   onChange={(e) => setSelectedYear(e.target.value)}
+// //                   style={{
+// //                     minWidth: '100px',
+// //                     borderRadius: '20px',
+// //                     cursor: 'pointer',
+// //                   }}
+// //                 >
+// //                   <option value="2026">2026</option>
+// //                   <option value="2025">2025</option>
+// //                 </Input>
+// //                 <Input
+// //                   type="select"
+// //                   className="form-select border-light shadow-sm"
+// //                   value={selectedMonth}
+// //                   onChange={(e) => setSelectedMonth(e.target.value)}
+// //                   style={{
+// //                     minWidth: '135px',
+// //                     borderRadius: '20px',
+// //                     cursor: 'pointer',
+// //                   }}
+// //                 >
+// //                   <option value="ALL">All Months</option>
+// //                   {[
+// //                     { v: '01', n: 'January' },
+// //                     { v: '02', n: 'February' },
+// //                     { v: '03', n: 'March' },
+// //                     { v: '04', n: 'April' },
+// //                     { v: '05', n: 'May' },
+// //                   ].map((m) => (
+// //                     <option key={m.v} value={m.v}>
+// //                       {m.n}
+// //                     </option>
+// //                   ))}
+// //                 </Input>
+// //               </div>
+// //             </div>
+// //             <PerformanceAreaChart data={performanceData} />
+// //           </CardBody>
+// //         </Card>
+
+// //         <Row>
+// //           <Col lg="12">
+// //             <LatestTranaction />
+// //           </Col>
+// //         </Row>
+// //       </Container>
+// //     </div>
+// //   );
+// // };
+
+// // export default Dashboard;
+
+// import React, { useEffect, useState } from 'react';
+// import { Container, Row, Col, Card, CardBody, Input } from 'reactstrap';
+// import Breadcrumbs from '../../components/Common/Breadcrumb';
+// import LatestTranaction from './Registration-list';
+
+// // Charts
+// import LanguagePieChart from './LanguagePieChart';
+// import GradeStackedBarChart from './GradeStackedBarChart';
+// import PerformanceAreaChart from './PerformanceAreaChart';
+
+// // Helpers
+// import { get } from '../../helpers/api_helper';
+// import {
+//   GET_USER_OVERVIEW_STATS,
+//   GET_PERFORMANCE_ANALYTICS,
+// } from '../../helpers/url_helper';
+
+// const Dashboard = () => {
+//   const [overviewFilter, setOverviewFilter] = useState('ALL');
+//   const [selectedYear, setSelectedYear] = useState(
+//     new Date().getFullYear().toString()
+//   );
+//   const [selectedMonth, setSelectedMonth] = useState('ALL');
+
+//   const [overviewData, setOverviewData] = useState({
+//     languages: [],
+//     gradesStacked: [],
+//   });
+//   const [performanceData, setPerformanceData] = useState([]);
+
+//   const fetchOverview = () => {
+//     get(`${GET_USER_OVERVIEW_STATS}?filter=${overviewFilter}`)
+//       .then((res) => {
+//         if (res && !res.error) {
+//           setOverviewData({
+//             languages: res.languages || [],
+//             gradesStacked: res.gradesStacked || [],
+//           });
+//         }
+//       })
+//       .catch((err) => console.error(err));
+//   };
+
+//   const fetchPerformance = () => {
+//     get(
+//       `${GET_PERFORMANCE_ANALYTICS}?year=${selectedYear}&month=${selectedMonth}`
+//     )
+//       .then((res) => {
+//         if (res && !res.error) setPerformanceData(res.performance || []);
+//       })
+//       .catch((err) => console.error(err));
+//   };
+
+//   useEffect(() => {
+//     fetchOverview();
+//   }, [overviewFilter]);
+//   useEffect(() => {
+//     fetchPerformance();
+//   }, [selectedYear, selectedMonth]);
+
+//   return (
+//     <div className="page-content" style={{ backgroundColor: '#f8f9fa' }}>
+//       <Container fluid>
+//         <Breadcrumbs title="Konzeptes" breadcrumbItem="LMS Analytics" />
+
+//         {/* SECTION 1: REGISTRATION OVERVIEW */}
+//         <Card
+//           className="border-0 shadow-sm mb-4"
+//           style={{ borderRadius: '15px' }}
+//         >
+//           <CardBody>
+//             <div className="d-flex align-items-center justify-content-between mb-4">
+//               <div>
+//                 <h4
+//                   className="card-title mb-1"
+//                   style={{ fontWeight: '700', color: '#495057' }}
+//                 >
+//                   Registration Overview
+//                 </h4>
+//                 <p className="text-muted mb-0 font-size-13">
+//                   Consolidated language and grade analytics
+//                 </p>
+//               </div>
+//               <Input
+//                 type="select"
+//                 className="form-select border-primary-subtle fw-semibold text-primary"
+//                 value={overviewFilter}
+//                 onChange={(e) => setOverviewFilter(e.target.value)}
+//                 style={{
+//                   cursor: 'pointer',
+//                   width: 'auto',
+//                   borderRadius: '20px',
+//                 }}
+//               >
+//                 <option value="ALL">All-Time Records</option>
+//                 <option value="MONTH">Current Month</option>
+//                 <option value="YEAR">Current Year</option>
+//               </Input>
+//             </div>
+
+//             <Row>
+//               <Col xl="4">
+//                 <Card
+//                   className="shadow-none border-0 h-100"
+//                   style={{
+//                     backgroundColor: 'rgba(52, 195, 143, 0.03)',
+//                     borderRadius: '12px',
+//                   }}
+//                 >
+//                   <CardBody className="text-center">
+//                     <h5 className="font-size-15 mb-4 fw-bold text-dark">
+//                       User Languages
+//                     </h5>
+//                     <LanguagePieChart data={overviewData.languages} />
+//                   </CardBody>
+//                 </Card>
+//               </Col>
+//               <Col xl="8">
+//                 <Card
+//                   className="shadow-none border-0 h-100"
+//                   style={{
+//                     backgroundColor: 'rgba(85, 110, 230, 0.03)',
+//                     borderRadius: '12px',
+//                   }}
+//                 >
+//                   <CardBody>
+//                     <h5 className="font-size-15 mb-4 fw-bold text-dark">
+//                       Users by Grade & Curriculum
+//                     </h5>
+//                     <GradeStackedBarChart data={overviewData.gradesStacked} />
+//                   </CardBody>
+//                 </Card>
+//               </Col>
+//             </Row>
+//           </CardBody>
+//         </Card>
+
+//         {/* SECTION 2: REGISTRATION REPORT */}
+//         <Card
+//           className="border-0 shadow-sm mb-4"
+//           style={{ borderRadius: '15px' }}
+//         >
+//           <CardBody>
+//             <div className="d-flex align-items-center justify-content-between mb-4">
+//               <h4
+//                 className="card-title mb-0"
+//                 style={{ fontWeight: '700', color: '#495057' }}
+//               >
+//                 Registration Report
+//               </h4>
+//               <div className="d-flex gap-2">
+//                 <Input
+//                   type="select"
+//                   className="form-select border-light shadow-sm"
+//                   value={selectedYear}
+//                   onChange={(e) => setSelectedYear(e.target.value)}
+//                   style={{
+//                     minWidth: '100px',
+//                     borderRadius: '20px',
+//                     cursor: 'pointer',
+//                   }}
+//                 >
+//                   <option value="2026">2026</option>
+//                   <option value="2025">2025</option>
+//                 </Input>
+//                 <Input
+//                   type="select"
+//                   className="form-select border-light shadow-sm"
+//                   value={selectedMonth}
+//                   onChange={(e) => setSelectedMonth(e.target.value)}
+//                   style={{
+//                     minWidth: '135px',
+//                     borderRadius: '20px',
+//                     cursor: 'pointer',
+//                   }}
+//                 >
+//                   <option value="ALL">All Months</option>
+//                   {[
+//                     { v: '01', n: 'January' },
+//                     { v: '02', n: 'February' },
+//                     { v: '03', n: 'March' },
+//                     { v: '04', n: 'April' },
+//                     { v: '05', n: 'May' },
+//                   ].map((m) => (
+//                     <option key={m.v} value={m.v}>
+//                       {m.n}
+//                     </option>
+//                   ))}
+//                 </Input>
+//               </div>
+//             </div>
+//             <PerformanceAreaChart data={performanceData} />
+//           </CardBody>
+//         </Card>
+
+//         <Row>
+//           <Col lg="12">
+//             <LatestTranaction />
+//           </Col>
+//         </Row>
+//       </Container>
+//     </div>
+//   );
+// };
+
+// export default Dashboard;
+
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Card, CardBody, Input } from 'reactstrap';
+import Breadcrumbs from '../../components/Common/Breadcrumb';
+import LatestTranaction from './Registration-list';
+
+// Charts
+import LanguagePieChart from './LanguagePieChart';
+import GradeStackedBarChart from './GradeStackedBarChart';
+import PerformanceAreaChart from './PerformanceAreaChart';
+
+// Helpers
+import { get } from '../../helpers/api_helper';
 import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Card,
-  CardBody,
-  Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Table,
-} from "reactstrap";
-import { Link } from "react-router-dom";
+  GET_USER_OVERVIEW_STATS,
+  GET_PERFORMANCE_ANALYTICS,
+} from '../../helpers/url_helper';
 
-import classNames from "classnames";
-// import StackedColumnChart from "./StackedColumnChart";
-// import { getChartsData as onGetChartsData } from "../../store/actions"
+const Dashboard = () => {
+  const currentYearStr = new Date().getFullYear().toString();
 
-import modalimage1 from "../../assets/images/product/img-7.png";
-import modalimage2 from "../../assets/images/product/img-4.png";
+  const [overviewFilter, setOverviewFilter] = useState('ALL');
+  const [selectedYear, setSelectedYear] = useState(currentYearStr);
+  const [selectedMonth, setSelectedMonth] = useState('ALL');
+  const [overviewData, setOverviewData] = useState({
+    languages: [],
+    gradesStacked: [],
+  });
+  const [performanceData, setPerformanceData] = useState([]);
 
-import WelcomeComp from "./WelcomeComp";
-// import MonthlyEarning from "./MonthlyEarning";
-// import SocialSource from "./SocialSource";
-// import ActivityComp from "./ActivityComp";
-// import TopCities from "./TopCities";
-import LatestTranaction from "./Registration-list";
+  // --- DYNAMIC MONTH GENERATOR ---
+  // Calculates how many months to show based on the selected year
+  const getAvailableMonths = () => {
+    const currentMonthNum = new Date().getMonth() + 1; // JS months are 0-indexed (0-11)
 
-//Import Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb";
+    // If viewing the current year, limit to the current month. Otherwise, show all 12.
+    const monthLimit = selectedYear === currentYearStr ? currentMonthNum : 12;
 
-//i18n
-import { withTranslation } from "react-i18next";
-
-//redux
-import { useSelector, useDispatch } from "react-redux";
-
-// ✅ IMPORT YOUR DYNAMIC API HELPERS
-import { get } from "../../helpers/api_helper";
-import { GET_REGISTRATION_COUNT } from "../../helpers/url_helper";
-
-const Dashboard = (props) => {
-  const [modal, setmodal] = useState(false);
-  const [subscribemodal, setSubscribemodal] = useState(false);
-  const [registrationCount, setRegistrationCount] = useState(0);
-  const [easyCount, setEasyCount] = useState(0);
-  const [intermediateCount, setIntermediateCount] = useState(0);
-  const [hardCount, setHardCount] = useState(0);
-
-  const { chartsData } = useSelector((state) => ({
-    chartsData: state.Dashboard.chartsData,
-  }));
-
-  function fetchDashboardMetrics() {
-    // ✅ USE DYNAMIC GET INSTEAD OF HARDCODED FETCH
-    get(GET_REGISTRATION_COUNT)
-      .then((data) => {
-        console.log("API Data Received:", data);
-        if (data.items && data.items.length > 0) {
-          const item = data.items[0];
-
-          setRegistrationCount(item.registrationcount || 0);
-          setEasyCount(item.easycount || 0);
-          setIntermediateCount(item.intermediatecount || 0);
-          setHardCount(item.hardcount || 0);
-        }
-      })
-      .catch((error) => {
-        console.error("Fetch Error:", error);
+    // Generate the array of objects dynamically
+    return Array.from({ length: monthLimit }, (_, i) => {
+      const monthNumber = (i + 1).toString().padStart(2, '0');
+      // Create a dummy date to extract the proper month name (e.g., 'January', 'February')
+      const monthName = new Date(2000, i, 1).toLocaleString('default', {
+        month: 'long',
       });
-  }
+
+      return { val: monthNumber, name: monthName };
+    });
+  };
+
+  const dynamicMonths = getAvailableMonths();
 
   useEffect(() => {
-    fetchDashboardMetrics();
-  }, []);
-
-  const reports = [
-    {
-      title: "Registration",
-      iconClass: "bx-user-plus",
-      description: registrationCount,
-    },
-    { title: "Easy", iconClass: "bx-star", description: easyCount },
-    {
-      title: "Intermediate",
-      iconClass: "bx-medal",
-      description: intermediateCount,
-    },
-    { title: "Hard", iconClass: "bx-trophy", description: hardCount },
-  ];
+    get(`${GET_USER_OVERVIEW_STATS}?filter=${overviewFilter}`)
+      .then((res) =>
+        setOverviewData({
+          languages: res.languages || [],
+          gradesStacked: res.gradesStacked || [],
+        })
+      )
+      .catch((err) => console.error(err));
+  }, [overviewFilter]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setSubscribemodal(true);
-    }, 2000);
-  }, []);
+    // Safety check: If switching to current year and the selected month is now in the future, reset to 'ALL'
+    const currentMonthNum = new Date().getMonth() + 1;
+    if (
+      selectedYear === currentYearStr &&
+      selectedMonth !== 'ALL' &&
+      parseInt(selectedMonth) > currentMonthNum
+    ) {
+      setSelectedMonth('ALL');
+    }
 
-  const [periodData, setPeriodData] = useState([]);
-  const [periodType, setPeriodType] = useState("yearly");
-
-  useEffect(() => {
-    setPeriodData(chartsData);
-  }, [chartsData]);
-
-  // const onChangeChartPeriod = pType => {
-  //   setPeriodType(pType)
-  //   dispatch(onGetChartsData(pType))
-  // }
-
-  // const dispatch = useDispatch()
-  // useEffect(() => {
-  //   dispatch(onGetChartsData("yearly"))
-  // }, [dispatch])
-
-  //meta title
-  document.title = "Dashboard | Konzeptes ";
+    get(
+      `${GET_PERFORMANCE_ANALYTICS}?year=${selectedYear}&month=${selectedMonth}`
+    )
+      .then((res) => setPerformanceData(res.performance || []))
+      .catch((err) => console.error(err));
+  }, [selectedYear, selectedMonth]);
 
   return (
-    <React.Fragment>
-      <div className="page-content">
-        <Container fluid>
-          {/* Render Breadcrumb */}
-          <Breadcrumbs
-            title={props.t("Dashboards")}
-            breadcrumbItem={props.t("Dashboard")}
-          />
+    <div className="page-content" style={{ backgroundColor: '#fbfbfb' }}>
+      <Container fluid>
+        <Breadcrumbs title="Konzeptes" breadcrumbItem="LMS Analytics" />
 
-          <Row>
-            <Col xl="4">
-              <WelcomeComp />
-            </Col>
-            <Col xl="8">
-              <Row>
-                {/* Reports Render */}
-                {reports.map((report, key) => (
-                  <Col md="4" key={"_col_" + key}>
-                    <Card className="mini-stats-wid">
-                      <CardBody>
-                        <div className="d-flex">
-                          <div className="flex-grow-1">
-                            <p className="text-muted fw-medium">
-                              {report.title}
-                            </p>
-                            <h4 className="mb-0">{report.description}</h4>
-                          </div>
-                          <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                            <span className="avatar-title rounded-circle bg-primary">
-                              <i
-                                className={
-                                  "bx " + report.iconClass + " font-size-24"
-                                }
-                              ></i>
-                            </span>
-                          </div>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col lg="12">
-              <LatestTranaction />
-            </Col>
-          </Row>
-        </Container>
-      </div>
-
-      {/* Order Details Modal (Preserved) */}
-      <Modal
-        isOpen={modal}
-        role="dialog"
-        autoFocus={true}
-        centered={true}
-        className="exampleModal"
-        tabIndex="-1"
-        toggle={() => {
-          setmodal(!modal);
-        }}
-      >
-        <div>
-          <ModalHeader
-            toggle={() => {
-              setmodal(!modal);
-            }}
-          >
-            Order Details
-          </ModalHeader>
-          <ModalBody>
-            <p className="mb-2">
-              Product id: <span className="text-primary">#SK2540</span>
-            </p>
-            <p className="mb-4">
-              Billing Name: <span className="text-primary">Neal Matthews</span>
-            </p>
-
-            <div className="table-responsive">
-              <Table className="table table-centered table-nowrap">
-                <thead>
-                  <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">
-                      <div>
-                        <img src={modalimage1} alt="" className="avatar-sm" />
-                      </div>
-                    </th>
-                    <td>
-                      <div>
-                        <h5 className="text-truncate font-size-14">
-                          Wireless Headphone (Black)
-                        </h5>
-                        <p className="text-muted mb-0">$ 225 x 1</p>
-                      </div>
-                    </td>
-                    <td>$ 255</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">
-                      <div>
-                        <img src={modalimage2} alt="" className="avatar-sm" />
-                      </div>
-                    </th>
-                    <td>
-                      <div>
-                        <h5 className="text-truncate font-size-14">
-                          Hoodie (Blue)
-                        </h5>
-                        <p className="text-muted mb-0">$ 145 x 1</p>
-                      </div>
-                    </td>
-                    <td>$ 145</td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2">
-                      <h6 className="m-0 text-end">Sub Total:</h6>
-                    </td>
-                    <td>$ 400</td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2">
-                      <h6 className="m-0 text-end">Shipping:</h6>
-                    </td>
-                    <td>Free</td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2">
-                      <h6 className="m-0 text-end">Total:</h6>
-                    </td>
-                    <td>$ 400</td>
-                  </tr>
-                </tbody>
-              </Table>
+        {/* SECTION 1: REGISTRATION OVERVIEW */}
+        <Card
+          className="border-0 shadow-sm mb-4"
+          style={{ borderRadius: '15px' }}
+        >
+          <CardBody>
+            <div className="d-flex align-items-center justify-content-between mb-4">
+              <div>
+                <h4
+                  className="card-title mb-1"
+                  style={{ fontWeight: '700', color: '#495057' }}
+                >
+                  Registration Overview
+                </h4>
+                <p className="text-muted mb-0 font-size-13">
+                  Consolidated language and grade analytics
+                </p>
+              </div>
+              <Input
+                type="select"
+                className="form-select border-primary-subtle fw-semibold text-primary"
+                value={overviewFilter}
+                onChange={(e) => setOverviewFilter(e.target.value)}
+                style={{
+                  cursor: 'pointer',
+                  width: 'auto',
+                  borderRadius: '20px',
+                }}
+              >
+                <option value="ALL">All-Time Records</option>
+                <option value="MONTH">Current Month</option>
+                <option value="YEAR">Current Year</option>
+              </Input>
             </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              type="button"
-              color="secondary"
-              onClick={() => {
-                setmodal(!modal);
-              }}
-            >
-              Close
-            </Button>
-          </ModalFooter>
-        </div>
-      </Modal>
-    </React.Fragment>
+            <Row>
+              <Col xl="4">
+                <Card
+                  className="shadow-none border-0 h-100"
+                  style={{
+                    backgroundColor: 'rgba(52, 195, 143, 0.03)',
+                    borderRadius: '12px',
+                  }}
+                >
+                  <CardBody className="text-center">
+                    <h5 className="font-size-15 mb-4 fw-bold text-dark">
+                      User Languages
+                    </h5>
+                    <LanguagePieChart data={overviewData.languages} />
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col xl="8">
+                <Card
+                  className="shadow-none border-0 h-100"
+                  style={{
+                    backgroundColor: 'rgba(85, 110, 230, 0.03)',
+                    borderRadius: '12px',
+                  }}
+                >
+                  <CardBody>
+                    <h5 className="font-size-15 mb-4 fw-bold text-dark">
+                      Grade & Curriculum Distribution
+                    </h5>
+                    <GradeStackedBarChart data={overviewData.gradesStacked} />
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          </CardBody>
+        </Card>
+
+        {/* SECTION 2: REGISTRATION REPORT */}
+        <Card
+          className="border-0 shadow-sm mb-4"
+          style={{ borderRadius: '15px' }}
+        >
+          <CardBody>
+            <div className="d-flex align-items-center justify-content-between mb-4">
+              <h4
+                className="card-title mb-0"
+                style={{ fontWeight: '700', color: '#495057' }}
+              >
+                Registration Report
+              </h4>
+              <div className="d-flex gap-2">
+                <Input
+                  type="select"
+                  className="form-select border-light shadow-sm"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  style={{
+                    minWidth: '100px',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <option value={currentYearStr}>{currentYearStr}</option>
+                  <option value={(parseInt(currentYearStr) - 1).toString()}>
+                    {parseInt(currentYearStr) - 1}
+                  </option>
+                </Input>
+
+                {/* DYNAMIC MONTH DROPDOWN */}
+                <Input
+                  type="select"
+                  className="form-select border-light shadow-sm"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  style={{
+                    minWidth: '135px',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <option value="ALL">All Months</option>
+                  {dynamicMonths.map((m) => (
+                    <option key={m.val} value={m.val}>
+                      {m.name}
+                    </option>
+                  ))}
+                </Input>
+              </div>
+            </div>
+            <PerformanceAreaChart data={performanceData} />
+          </CardBody>
+        </Card>
+
+        <LatestTranaction />
+      </Container>
+    </div>
   );
 };
 
-Dashboard.propTypes = {
-  t: PropTypes.any,
-  chartsData: PropTypes.any,
-  // onGetChartsData: PropTypes.func,
-};
-
-export default withTranslation()(Dashboard);
-
-// import PropTypes from "prop-types"
-// import React, { useEffect, useState } from "react"
-// import {
-//   Container,
-//   Row,
-//   Col,
-//   Button,
-//   Card,
-//   CardBody,
-//   Input,
-//   Modal,
-//   ModalHeader,
-//   ModalBody,
-//   ModalFooter,
-//   Table,
-// } from "reactstrap"
-// import { Link } from "react-router-dom"
-
-// import classNames from "classnames"
-// import StackedColumnChart from "./StackedColumnChart"
-// import { getChartsData as onGetChartsData } from "../../store/actions"
-
-// import modalimage1 from "../../assets/images/product/img-7.png"
-// import modalimage2 from "../../assets/images/product/img-4.png"
-
-// import WelcomeComp from "./WelcomeComp"
-// import MonthlyEarning from "./MonthlyEarning"
-// import SocialSource from "./SocialSource"
-// import ActivityComp from "./ActivityComp"
-// import TopCities from "./TopCities"
-// import LatestTranaction from "./LatestTranaction"
-
-// //Import Breadcrumb
-// import Breadcrumbs from "../../components/Common/Breadcrumb"
-
-// //i18n
-// import { withTranslation } from "react-i18next"
-
-// //redux
-// import { useSelector, useDispatch } from "react-redux"
-// import axios from "axios"
-
-// const Dashboard = props => {
-//   const [modal, setmodal] = useState(false)
-//   const [subscribemodal, setSubscribemodal] = useState(false)
-//   const [registrationCount, setRegistrationCount] = useState(0)
-//   const [easyCount, setEasyCount] = useState(0)
-//   const [intermediateCount, setIntermediateCount] = useState(0)
-//   const [hardCount, setHardCount] = useState(0)
-
-//   const { chartsData } = useSelector(state => ({
-//     chartsData: state.Dashboard.chartsData,
-//   }))
-
-//   const ordsInstance = axios.create()
-
-//   function fetchDashboardMetrics() {
-//     fetch("http://192.168.0.127:8080/ords/lms/user/registration-count")
-//       // fetch("http://192.168.0.117:8080/ords/dev/user/registration-count")
-//       .then(response => {
-//         if (!response.ok) throw new Error("Network response was not ok")
-//         return response.json()
-//       })
-//       .then(data => {
-//         console.log("API Data Received:", data)
-//         if (data.items && data.items.length > 0) {
-//           const item = data.items[0]
-
-//           setRegistrationCount(item.registrationcount || 0)
-//           setEasyCount(item.easycount || 0)
-//           setIntermediateCount(item.intermediatecount || 0)
-//           setHardCount(item.hardcount || 0)
-//         }
-//       })
-//       .catch(error => {
-//         console.error("Fetch Error:", error)
-//       })
-//   }
-
-//   useEffect(() => {
-//     fetchDashboardMetrics()
-//   }, [])
-
-//   const reports = [
-//     {
-//       title: "Registration",
-//       iconClass: "bx-user-plus",
-//       description: registrationCount,
-//     },
-//     { title: "Easy", iconClass: "bx-star", description: easyCount },
-//     {
-//       title: "Intermediate",
-//       iconClass: "bx-medal",
-//       description: intermediateCount,
-//     },
-//     { title: "Hard", iconClass: "bx-trophy", description: hardCount },
-//   ]
-
-//   useEffect(() => {
-//     setTimeout(() => {
-//       setSubscribemodal(true)
-//     }, 2000)
-//   }, [])
-
-//   const [periodData, setPeriodData] = useState([])
-//   const [periodType, setPeriodType] = useState("yearly")
-
-//   useEffect(() => {
-//     setPeriodData(chartsData)
-//   }, [chartsData])
-
-//   const onChangeChartPeriod = pType => {
-//     setPeriodType(pType)
-//     dispatch(onGetChartsData(pType))
-//   }
-
-//   const dispatch = useDispatch()
-//   useEffect(() => {
-//     dispatch(onGetChartsData("yearly"))
-//   }, [dispatch])
-
-//   //meta title
-//   document.title = "Dashboard | Konzeptes "
-
-//   return (
-//     <React.Fragment>
-//       <div className="page-content">
-//         <Container fluid>
-//           {/* Render Breadcrumb */}
-//           <Breadcrumbs
-//             title={props.t("Dashboards")}
-//             breadcrumbItem={props.t("Dashboard")}
-//           />
-
-//           <Row>
-//             <Col xl="4">
-//               <WelcomeComp />
-//             </Col>
-//             <Col xl="8">
-//               <Row>
-//                 {/* Reports Render */}
-//                 {reports.map((report, key) => (
-//                   <Col md="4" key={"_col_" + key}>
-//                     <Card className="mini-stats-wid">
-//                       <CardBody>
-//                         <div className="d-flex">
-//                           <div className="flex-grow-1">
-//                             <p className="text-muted fw-medium">
-//                               {report.title}
-//                             </p>
-//                             <h4 className="mb-0">{report.description}</h4>
-//                           </div>
-//                           <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-//                             <span className="avatar-title rounded-circle bg-primary">
-//                               <i
-//                                 className={
-//                                   "bx " + report.iconClass + " font-size-24"
-//                                 }
-//                               ></i>
-//                             </span>
-//                           </div>
-//                         </div>
-//                       </CardBody>
-//                     </Card>
-//                   </Col>
-//                 ))}
-//               </Row>
-//             </Col>
-//           </Row>
-
-//           <Row>
-//             <Col lg="12">
-//               <LatestTranaction />
-//             </Col>
-//           </Row>
-//         </Container>
-//       </div>
-
-//       {/* Order Details Modal (Preserved) */}
-//       <Modal
-//         isOpen={modal}
-//         role="dialog"
-//         autoFocus={true}
-//         centered={true}
-//         className="exampleModal"
-//         tabIndex="-1"
-//         toggle={() => {
-//           setmodal(!modal)
-//         }}
-//       >
-//         <div>
-//           <ModalHeader
-//             toggle={() => {
-//               setmodal(!modal)
-//             }}
-//           >
-//             Order Details
-//           </ModalHeader>
-//           <ModalBody>
-//             <p className="mb-2">
-//               Product id: <span className="text-primary">#SK2540</span>
-//             </p>
-//             <p className="mb-4">
-//               Billing Name: <span className="text-primary">Neal Matthews</span>
-//             </p>
-
-//             <div className="table-responsive">
-//               <Table className="table table-centered table-nowrap">
-//                 <thead>
-//                   <tr>
-//                     <th scope="col">Product</th>
-//                     <th scope="col">Product Name</th>
-//                     <th scope="col">Price</th>
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   <tr>
-//                     <th scope="row">
-//                       <div>
-//                         <img src={modalimage1} alt="" className="avatar-sm" />
-//                       </div>
-//                     </th>
-//                     <td>
-//                       <div>
-//                         <h5 className="text-truncate font-size-14">
-//                           Wireless Headphone (Black)
-//                         </h5>
-//                         <p className="text-muted mb-0">$ 225 x 1</p>
-//                       </div>
-//                     </td>
-//                     <td>$ 255</td>
-//                   </tr>
-//                   <tr>
-//                     <th scope="row">
-//                       <div>
-//                         <img src={modalimage2} alt="" className="avatar-sm" />
-//                       </div>
-//                     </th>
-//                     <td>
-//                       <div>
-//                         <h5 className="text-truncate font-size-14">
-//                           Hoodie (Blue)
-//                         </h5>
-//                         <p className="text-muted mb-0">$ 145 x 1</p>
-//                       </div>
-//                     </td>
-//                     <td>$ 145</td>
-//                   </tr>
-//                   <tr>
-//                     <td colSpan="2">
-//                       <h6 className="m-0 text-end">Sub Total:</h6>
-//                     </td>
-//                     <td>$ 400</td>
-//                   </tr>
-//                   <tr>
-//                     <td colSpan="2">
-//                       <h6 className="m-0 text-end">Shipping:</h6>
-//                     </td>
-//                     <td>Free</td>
-//                   </tr>
-//                   <tr>
-//                     <td colSpan="2">
-//                       <h6 className="m-0 text-end">Total:</h6>
-//                     </td>
-//                     <td>$ 400</td>
-//                   </tr>
-//                 </tbody>
-//               </Table>
-//             </div>
-//           </ModalBody>
-//           <ModalFooter>
-//             <Button
-//               type="button"
-//               color="secondary"
-//               onClick={() => {
-//                 setmodal(!modal)
-//               }}
-//             >
-//               Close
-//             </Button>
-//           </ModalFooter>
-//         </div>
-//       </Modal>
-//     </React.Fragment>
-//   )
-// }
-
-// Dashboard.propTypes = {
-//   t: PropTypes.any,
-//   chartsData: PropTypes.any,
-//   onGetChartsData: PropTypes.func,
-// }
-
-// export default withTranslation()(Dashboard)
+export default Dashboard;

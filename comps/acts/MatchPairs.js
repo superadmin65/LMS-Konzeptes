@@ -252,6 +252,137 @@ export default function MatchPairs({ data }) {
 
   /* ================= UI ================= */
 
+  // return (
+  //   <div className={styles.wrapper}>
+  //     <div className={styles.mainCard}>
+  //       <div className={styles.title}>
+  //         {(data.title || "Match the Pairs").replace(/\s*\(/, "\n(")}
+  //       </div>
+
+  //       {status !== "SUMMARY" ? (
+  //         <div className={styles.main}>
+  //           <div
+  //             className={styles.matchContainer}
+  //             ref={containerRef}
+  //             onMouseMove={handleMouseMove}
+  //             onMouseUp={handleMouseUp}
+  //             onMouseLeave={() => setDragging(null)}
+  //           >
+  //             {/* LEFT */}
+  //             <div className={styles.column}>
+  //               {leftItems.map((item, i) => (
+  //                 <div
+  //                   key={i}
+  //                   ref={(el) => (leftRefs.current[item] = el)}
+  //                   className={`${styles.box} ${
+  //                     dragging?.left === item ? styles.selected : ""
+  //                   }`}
+  //                   onMouseDown={(e) => handleMouseDown(e, item)}
+  //                 >
+  //                   {item}
+  //                 </div>
+  //               ))}
+  //             </div>
+
+  //             {/* SVG */}
+  //             <svg className={styles.lines}>
+  //               {connections.map((c, i) => {
+  //                 const p1 = getPoint(leftRefs.current[c.left], "left");
+  //                 const p2 = getPoint(rightRefs.current[c.right], "right");
+
+  //                 return (
+  //                   <line
+  //                     key={i}
+  //                     x1={p1.x}
+  //                     y1={p1.y}
+  //                     x2={p2.x}
+  //                     y2={p2.y}
+  //                     className={getLineColorClass(c.left, c.right)}
+  //                   />
+  //                 );
+  //               })}
+
+  //               {dragging && (
+  //                 <line
+  //                   x1={dragging.startX}
+  //                   y1={dragging.startY}
+  //                   x2={mousePos.x}
+  //                   y2={mousePos.y}
+  //                   className={styles.lineDefault}
+  //                   strokeDasharray="5,5"
+  //                 />
+  //               )}
+  //             </svg>
+
+  //             {/* RIGHT */}
+  //             <div className={styles.column}>
+  //               {rightItems.map((item, i) => (
+  //                 <div
+  //                   key={i}
+  //                   ref={(el) => (rightRefs.current[item] = el)}
+  //                   className={`${styles.box} ${
+  //                     hoveredRight === item ? styles.hoverTarget : ""
+  //                   }`}
+  //                   onMouseEnter={() => setHoveredRight(item)}
+  //                   onMouseLeave={() => setHoveredRight(null)}
+  //                 >
+  //                   {item}
+  //                 </div>
+  //               ))}
+  //             </div>
+  //           </div>
+
+  //           {/* FOOTER */}
+  //           <div className={styles.footer}>
+  //             <div className={styles.small}>
+  //               Connected: {connections.length} / {pairs.length}
+  //             </div>
+
+  //             <button
+  //               className={styles.nextBtn}
+  //               onClick={handleSubmit}
+  //               disabled={connections.length !== pairs.length}
+  //             >
+  //               Submit
+  //             </button>
+  //           </div>
+  //         </div>
+  //       ) : (
+  //         <div className={styles.main}>
+  //           <h2 style={{ textAlign: "center", marginBottom: 10 }}>
+  //             You have completed this activity.
+  //           </h2>
+
+  //           <div
+  //             style={{
+  //               display: "flex",
+  //               justifyContent: "space-between",
+  //               marginTop: 12,
+  //             }}
+  //           >
+  //             <div className={styles.small}>
+  //               Final Score: {score} / {pairs.length}
+  //             </div>
+
+  //             <div style={{ display: "flex", gap: 10 }}>
+  //               <button className={`${styles.nextBtn} `} onClick={resetQuiz}>
+  //                 Reset Activity
+  //               </button>
+
+  //               <button
+  //                 className={`${styles.nextBtn}`}
+  //                 onClick={handleFinalNext}
+  //               >
+  //                 Next Activity
+  //               </button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       )}
+  //     </div>
+  //   </div>
+  // );
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.mainCard}>
@@ -259,126 +390,108 @@ export default function MatchPairs({ data }) {
           {(data.title || "Match the Pairs").replace(/\s*\(/, "\n(")}
         </div>
 
-        {status !== "SUMMARY" ? (
-          <div className={styles.main}>
-            <div
-              className={styles.matchContainer}
-              ref={containerRef}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={() => setDragging(null)}
-            >
-              {/* LEFT */}
-              <div className={styles.column}>
-                {leftItems.map((item, i) => (
-                  <div
-                    key={i}
-                    ref={(el) => (leftRefs.current[item] = el)}
-                    className={`${styles.box} ${
-                      dragging?.left === item ? styles.selected : ""
-                    }`}
-                    onMouseDown={(e) => handleMouseDown(e, item)}
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              {/* SVG */}
-              <svg className={styles.lines}>
-                {connections.map((c, i) => {
-                  const p1 = getPoint(leftRefs.current[c.left], "left");
-                  const p2 = getPoint(rightRefs.current[c.right], "right");
-
-                  return (
-                    <line
-                      key={i}
-                      x1={p1.x}
-                      y1={p1.y}
-                      x2={p2.x}
-                      y2={p2.y}
-                      className={getLineColorClass(c.left, c.right)}
-                    />
-                  );
-                })}
-
-                {dragging && (
-                  <line
-                    x1={dragging.startX}
-                    y1={dragging.startY}
-                    x2={mousePos.x}
-                    y2={mousePos.y}
-                    className={styles.lineDefault}
-                    strokeDasharray="5,5"
-                  />
-                )}
-              </svg>
-
-              {/* RIGHT */}
-              <div className={styles.column}>
-                {rightItems.map((item, i) => (
-                  <div
-                    key={i}
-                    ref={(el) => (rightRefs.current[item] = el)}
-                    className={`${styles.box} ${
-                      hoveredRight === item ? styles.hoverTarget : ""
-                    }`}
-                    onMouseEnter={() => setHoveredRight(item)}
-                    onMouseLeave={() => setHoveredRight(null)}
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* FOOTER */}
-            <div className={styles.footer}>
-              <div className={styles.small}>
-                Connected: {connections.length} / {pairs.length}
-              </div>
-
-              <button
-                className={styles.nextBtn}
-                onClick={handleSubmit}
-                disabled={connections.length !== pairs.length}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className={styles.main}>
-            <h2 style={{ textAlign: "center", marginBottom: 10 }}>
-              You have completed this activity.
-            </h2>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: 12,
-              }}
-            >
-              <div className={styles.small}>
-                Final Score: {score} / {pairs.length}
-              </div>
-
-              <div style={{ display: "flex", gap: 10 }}>
-                <button className={`${styles.nextBtn} `} onClick={resetQuiz}>
-                  Reset Activity
-                </button>
-
-                <button
-                  className={`${styles.nextBtn}`}
-                  onClick={handleFinalNext}
+        <div className={styles.main}>
+          <div
+            className={styles.matchContainer}
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={() => setDragging(null)}
+          >
+            {/* LEFT COLUMN */}
+            <div className={styles.column}>
+              {leftItems.map((item, i) => (
+                <div
+                  key={i}
+                  ref={(el) => (leftRefs.current[item] = el)}
+                  className={`${styles.box} ${
+                    dragging?.left === item ? styles.selected : ""
+                  }`}
+                  onMouseDown={(e) => handleMouseDown(e, item)}
                 >
-                  Next Activity
-                </button>
-              </div>
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            {/* SVG LINES - Color logic is handled by getLineColorClass */}
+            <svg className={styles.lines}>
+              {connections.map((c, i) => {
+                const p1 = getPoint(leftRefs.current[c.left], "left");
+                const p2 = getPoint(rightRefs.current[c.right], "right");
+
+                return (
+                  <line
+                    key={i}
+                    x1={p1.x}
+                    y1={p1.y}
+                    x2={p2.x}
+                    y2={p2.y}
+                    className={getLineColorClass(c.left, c.right)}
+                  />
+                );
+              })}
+
+              {dragging && (
+                <line
+                  x1={dragging.startX}
+                  y1={dragging.startY}
+                  x2={mousePos.x}
+                  y2={mousePos.y}
+                  className={styles.lineDefault}
+                  strokeDasharray="5,5"
+                />
+              )}
+            </svg>
+
+            {/* RIGHT COLUMN */}
+            <div className={styles.column}>
+              {rightItems.map((item, i) => (
+                <div
+                  key={i}
+                  ref={(el) => (rightRefs.current[item] = el)}
+                  className={`${styles.box} ${
+                    hoveredRight === item ? styles.hoverTarget : ""
+                  }`}
+                  onMouseEnter={() => setHoveredRight(item)}
+                  onMouseLeave={() => setHoveredRight(null)}
+                >
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
-        )}
+
+          {/* FOOTER - Displays score and dynamic buttons */}
+          <div className={styles.footer}>
+            <div className={styles.small}>
+              {evaluated
+                ? `Final Score: ${score} / ${pairs.length}`
+                : `Connected: ${connections.length} / ${pairs.length}`}
+            </div>
+
+            <div style={{ display: "flex", gap: 10 }}>
+              {!evaluated ? (
+                <button
+                  className={styles.nextBtn}
+                  onClick={handleSubmit}
+                  disabled={connections.length !== pairs.length}
+                >
+                  Submit
+                </button>
+              ) : (
+                <>
+                  <button className={styles.nextBtn} onClick={resetQuiz}>
+                    Reset
+                  </button>
+                  <button className={styles.nextBtn} onClick={handleFinalNext}>
+                    Next Activity
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

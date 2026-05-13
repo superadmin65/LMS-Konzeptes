@@ -1,0 +1,286 @@
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: transparent;
+  min-height: 100vh;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.row {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 40px;
+}
+
+.rowHeader {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.wordLabel {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #00334e;
+}
+
+.audioWrapper {
+  flex-grow: 1;
+}
+
+.customAudio {
+  height: 40px;
+  max-width: 300px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* === THE FIX FOR TINY IMAGES === */
+.imageBlock {
+  width: 100%;
+  aspect-ratio: 4 / 3; /* Keeps blocks uniform */
+  background: #f0f0f0;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Clips the image to the rounded corners */
+  position: relative;
+}
+
+.fullImg {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important; /* Stretches/crops image to perfectly fill box */
+  object-position: center !important;
+  display: block;
+}
+
+/* Options Popup Container */
+.targetWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.floatingOptions {
+  position: absolute;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.optionsList {
+  display: flex;
+  gap: 15px;
+}
+
+.optionMiniCard {
+  width: 110px;
+  height: 110px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 4px solid transparent; /* Ready for selection highlight */
+  overflow: hidden;
+  transition: all 0.2s;
+  background: #fff;
+}
+
+.selectedHighlight {
+  border-color: #28a745; /* Green border when selected */
+  transform: scale(1.05);
+}
+
+.submitBtn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 40px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.dropTarget {
+  border: 3px dashed #ccc;
+  cursor: pointer;
+}
+
+.placeholder {
+  font-size: 3rem;
+  color: #bbb;
+}
+
+.disabledRow {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.fadeIn {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* Add to existing CSS */
+
+.progressFooter {
+  text-align: right;
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #666;
+  font-weight: bold;
+}
+
+/* Summary Screen Styles */
+.summaryTitle {
+  text-align: center;
+  color: #333;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+.footerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+}
+
+.scoreText {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #444;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 15px;
+}
+
+.resetBtn, .nextActBtn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.resetBtn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.nextActBtn {
+  background-color: #00334e;
+  color: white;
+}
+
+.resetBtn:hover, .nextActBtn:hover {
+  opacity: 0.9;
+}
+/* === NEW FEEDBACK BANNER STYLES === */
+
+/* === NEW SEPARATED FEEDBACK STYLES === */
+
+.feedbackWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  animation: slideUpFade 0.4s ease-out forwards;
+}
+
+/* The Pill-shaped badge like the uploaded image */
+.feedbackBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 25px;
+  border-radius: 50px; /* Makes it a pill shape */
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.badgeCorrect {
+  background-color: #4CAF50; /* The exact green from your image */
+}
+
+.badgeWrong {
+  background-color: #f44336; /* A clear red for wrong answers */
+}
+
+/* The standalone Next button */
+.nextQuestionBtn {
+  background-color: #00334e;
+  color: white;
+  border: none;
+  padding: 12px 35px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.nextQuestionBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.nextQuestionBtn:active {
+  transform: translateY(0);
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

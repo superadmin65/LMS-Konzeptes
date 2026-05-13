@@ -1,4 +1,3 @@
-import axios from "axios";
 
 // 1. Declare the constant at the top so it's accessible to the whole file
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -15,7 +14,10 @@ export const apiService = {
   login: (data) => api.post("/v2/user/login", data),
   register: (data) => api.post("/v2/user/register", data),
 
-  // PROFILE ✅ ADD THIS BLOCK
+  // --- PROFILE ---
+  // getProfile: (data) => api.post("/v2/user/get-profile", data),
+  // updateProfile: (data) => api.post("/v2/user/update-profile", data),
+
   getProfile: (data) => api.post("/v2/user/get-profile", data),
   updateProfile: (data) => api.post("/v2/user/update-profile", data),
 
@@ -39,8 +41,12 @@ export const apiService = {
   completeSpelling: (data) => api.post("/completedword/complete", data),
 
   // --- PLAYLIST / ACTIVITY DATA ---
-  getActivityData: (id) => api.get("/activity/data", { params: { id } }),
-  getActivityDetail: (id) => api.get(`/activity/detail/${id}`),
+  // getActivityData: (id) => api.get("/activity/data", { params: { id } }),
+  getActivityData: (params) => api.get("/activity/data", { params }),
+  getActivityDetail: (id, profile) =>
+    api.get(`/activity/detail/${id}`, { params: profile }),
+  // getActivityDetail: (id, profile) =>api.get(`/activity/detail`, {params: { id, ...profile },}),
+  // getActivityDetail: (id) => api.get(`/activity/detail/${id}`),
 
   // --- IMAGE HELPERS ---
   // This helper generates the dynamic URL for your Oracle images
@@ -50,7 +56,9 @@ export const apiService = {
   getBgImageUrl: (id) => `${API_BASE}/v1/konzeptes/image/bg/${id}`,
 
   // --- HOME / DASHBOARD CONFIG ---
-  getHomeConfig: () => api.get("/v1/konzeptes/config"),
+  // getHomeConfig: () => api.get("/v1/konzeptes/config"),
+  getHomeConfig: (profile) =>
+    api.get("/v1/konzeptes/config", { params: profile }),
 
   // --- SEQUENCE ---
   getSequenceProgress: (uid, aid) =>
@@ -71,4 +79,26 @@ export const apiService = {
   saveMatchByProgress: (payload) => api.post("/matchby/progress", payload),
 
   completeMatchBy: (payload) => api.post("/matchby/complete", payload),
+
+  sendWelcomeEmail: (data) => api.post("/api/send-email", data),
+
+
+
+  // -- WORD SEARCH ---
+
+// Add to your existing apiService object
+getWordSearchProgress: (userId, actId) => 
+  api.get(`/wordsearch/progress/${userId}/${actId}`, { 
+    params: { t: new Date().getTime() } 
+  }),
+
+saveWordSearchProgress: (payload) => 
+  api.post("/wordsearch/progress", payload),
+
+completeWordSearch: (payload) => 
+  api.post("/wordsearch/complete", payload),
 };
+
+
+
+

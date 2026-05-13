@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import IconView from "comps/curriculumViews/IconViewMini";
 import UserDropdown from "comps/UserDropdown";
-import { apiService } from "../utils/apiService"; // Centralized Service
+import { apiService } from "../utils/apiService";
 import Head from "next/head";
 
 export default function HomeView() {
@@ -26,7 +26,7 @@ export default function HomeView() {
       fontWeight: "800",
       textAlign: "center",
       margin: "0 auto 8px",
-      color: "#2b7d10", // 👈 solid color
+      color: "#2b7d10",
       letterSpacing: "1.5px",
       textShadow: "0 2px 8px rgba(43,125,16,0.3)", // 👈 soft glow
     },
@@ -51,6 +51,35 @@ export default function HomeView() {
     list: [], // This will be filled by the API
   };
 
+  // useEffect(() => {
+  //   // 1. Check Login
+  //   const loggedIn = localStorage.getItem("isLoggedIn");
+  //   if (loggedIn !== "true") {
+  //     window.location.href = "/lms-system";
+  //     return;
+  //   }
+
+  //   // 2. Fetch API Data using Centralized Service
+  //   const loadConfig = async () => {
+  //     try {
+  //       const response = await apiService.getHomeConfig();
+  //       const data = response.data;
+
+  //       // Parse the stringified list from the API
+  //       const rawString = data.items[0].list;
+  //       const parsedList = JSON.parse(rawString);
+
+  //       // Merge API list with your static styles
+  //       setMenuData({ ...staticConfig, list: parsedList });
+  //       setIsLoading(false);
+  //     } catch (err) {
+  //       console.error("Fetch error:", err);
+  //     }
+  //   };
+
+  //   loadConfig();
+  // }, []);
+
   useEffect(() => {
     // 1. Check Login
     const loggedIn = localStorage.getItem("isLoggedIn");
@@ -62,18 +91,39 @@ export default function HomeView() {
     // 2. Fetch API Data using Centralized Service
     const loadConfig = async () => {
       try {
-        const response = await apiService.getHomeConfig();
+        // --- NEW: Pull profile from localStorage ---
+        const profile = {
+          grade: localStorage.getItem("grade"),
+          language: localStorage.getItem("language"),
+          curriculum: localStorage.getItem("curriculum"),
+        };
+
+        // if (!grade || !language || !curriculum) {
+        //   console.warn(
+        //     "Profile data missing from localStorage. Waiting or redirecting...",
+        //   );
+        //   return;
+        // }
+
+        // --- NEW: Pass the profile object to the service ---
+        const response = await apiService.getHomeConfig(profile);
         const data = response.data;
 
         // Parse the stringified list from the API
-        const rawString = data.items[0].list;
-        const parsedList = JSON.parse(rawString);
+        // Handle cases where data.items might be empty or list is already an object
+        if (data.items && data.items.length > 0) {
+          const rawString = data.items[0].list;
+          const parsedList =
+            typeof rawString === "string" ? JSON.parse(rawString) : rawString;
 
-        // Merge API list with your static styles
-        setMenuData({ ...staticConfig, list: parsedList });
+          // Merge API list with your static styles
+          setMenuData({ ...staticConfig, list: parsedList || [] });
+        }
+
         setIsLoading(false);
       } catch (err) {
         console.error("Fetch error:", err);
+        setIsLoading(false);
       }
     };
 

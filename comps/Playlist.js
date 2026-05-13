@@ -23,13 +23,14 @@ import ClassifySentenceAct from "./acts/ClassifySentenceAct";
 import MatchByAct from "./acts/MatchByAct";
 import InformationProcessingAct from "./acts/InformationProcessingAct";
 import DragDropAct from "./acts/DragDropAct";
-
+import VisualInfoProcessingAct from "./acts/VisualInfoProcessingAct";
 import MatchPairs from "./acts/MatchPairs";
 import JoinWords from "./acts/completePuzzle";
 import FillupAct from "./acts/FillupAct";
 import SelectWordAct from "./acts/SelectWordAct";
 import RightOneAct from "./acts/RightOneAct";
 import GroupAct from "./acts/GroupAct";
+import ClickAndDragAct from "./acts/ClickAndDragAct";
 
 const playlistIconSvgPath =
   "m21 4c0-.478-.379-1-1-1h-16c-.62 0-1 .519-1 1v16c0 .621.52 1 1 1h16c.478 0 1-.379 1-1zm-16.5.5h15v15h-15zm12.5 10.75c0-.414-.336-.75-.75-.75h-8.5c-.414 0-.75.336-.75.75s.336.75.75.75h8.5c.414 0 .75-.336.75-.75zm0-3.248c0-.414-.336-.75-.75-.75h-8.5c-.414 0-.75.336-.75.75s.336.75.75.75h8.5c.414 0 .75-.336.75-.75zm0-3.252c0-.414-.336-.75-.75-.75h-8.5c-.414 0-.75.336-.75.75s.336.75.75.75h8.5c.414 0 .75-.336.75-.75z";
@@ -431,9 +432,49 @@ export default function Playlist(props) {
       currentBg: bg,
     }));
     const startTime = Date.now();
+
+    //  {
+    //   const activityId = String(item.id);
+    //   const res = await apiService.getActivityDetail(activityId);
+
+    //   let data = res.data;
+    //   if (typeof data === "string") {
+    //     try {
+    //       data = JSON.parse(data);
+    //     } catch {
+    //       data = {};
+    //     }
+    //   }
+
+    //   const elapsed = Date.now() - startTime;
+    //   const remainingTime = Math.max(1000 - elapsed, 0);
+
+    //   setTimeout(() => {
+    //     setState((prev) => ({
+    //       ...prev,
+    //       active: { ...item, data: data || {} },
+    //       activeChap,
+    //       activeNum: i + 1,
+    //       hideTOC: false,
+    //       currentBg: bg,
+    //       isLoading: false,
+    //     }));
+    //   }, remainingTime);
+    // }
+
     try {
       const activityId = String(item.id);
-      const res = await apiService.getActivityDetail(activityId);
+
+      // 1. Retrieve the student profile from storage
+      const profile = {
+        grade: localStorage.getItem("grade"),
+        language: localStorage.getItem("language"),
+        curriculum: localStorage.getItem("curriculum"),
+      };
+
+      // 2. Pass the profile as the second argument to the service
+      // This ensures the URL becomes: /activity/detail?id=act-xxx&grade=Primary 1...
+      const res = await apiService.getActivityDetail(activityId, profile);
 
       let data = res.data;
       if (typeof data === "string") {
@@ -442,6 +483,12 @@ export default function Playlist(props) {
         } catch {
           data = {};
         }
+      }
+
+      // If the backend returns an error object, handle it here
+      if (data.error) {
+        console.error("Access Error:", data.error);
+        data = {}; // Or trigger a notification
       }
 
       const elapsed = Date.now() - startTime;
@@ -852,26 +899,6 @@ export default function Playlist(props) {
         <PIconView data={props.toc} appType="small" />
       )}
 
-      {/* {state.hideTOC && state.activeChap !== -1 && (
-      {state.hideTOC && (
-        // <div style={{ marginTop: 50 }}>
-        <div
-          style={{
-            position: "fixed",
-            top: "10px",
-            left: "10px",
-            zIndex: 1100,
-          }}
-        >
-          <Svg
-            size="32"
-            d={playlistIconSvgPath}
-            color="var(--d)"
-            onClick={() => setState({ ...state, hideTOC: false })}
-          />
-        </div>
-      )} */}
-
       {(!props.toc.type || props.toc.type === "nested") && (
         <div className="mainPlaceHolder">
           {state.active && state.active.type === "chapter" && (
@@ -992,27 +1019,6 @@ export default function Playlist(props) {
   );
 }
 
-// function getIcon(type) {
-//   switch (type) {
-//     case "mcq":
-//       return (
-//         <img src={publicPath("/konzeptes/icons/spelling.png")} alt="PDF" />
-//       );
-//     case "link":
-//       return <img src={publicPath("/img/icons/linkIcon.png")} alt="Link" />;
-//     case "pLink":
-//       return <img src={publicPath("/img/icons/icon32.png")} alt="Link" />;
-//     case "mvid":
-//       return <img src={publicPath("/img/icons/videoIcon.png")} alt="Video" />;
-//     case "youtube":
-//       return (
-//         <img src={publicPath("/img/icons/youtubeIcon.png")} alt="YouTube" />
-//       );
-//     default:
-//       return <div className="imgPlaceHolder" />;
-//   }
-// }
-
 function displayResource(
   item,
   onClose,
@@ -1025,23 +1031,6 @@ function displayResource(
   const bgUrl = isApiBg ? bgImage : publicPath("/bg-images/" + bgImage);
 
   const label = (chapterLabel || "").toLowerCase();
-
-  // if (!item || !item.data) {
-  //   return (
-  //     <div
-  //       style={{
-  //         fontSize: "2rem",
-  //         display: "flex",
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //         height: "100%",
-  //         backgroundColor: "var(--l)",
-  //       }}
-  //     >
-  //       ⏳ Loading... ⏳
-  //     </div>
-  //   );
-  // }
 
   switch (item.type) {
     case "pdf": {
@@ -1092,7 +1081,7 @@ function displayResource(
     case "completeWord":
       return (
         <ActivityWrapper bgUrl={bgUrl} id={chapId}>
-          <CompleteWordAct data={payload}/>
+          <CompleteWordAct data={payload} />
         </ActivityWrapper>
       );
     case "wordsearch":
@@ -1125,10 +1114,26 @@ function displayResource(
           <InformationProcessingAct data={payload} />
         </ActivityWrapper>
       );
+
+    case "visualInformationProcessing": // Exact DB type from admin
+    case "visual_audio":
+    case "visual_image":
+      return (
+        <ActivityWrapper bgUrl={bgUrl} id={chapId}>
+          <VisualInfoProcessingAct data={payload} />
+        </ActivityWrapper>
+      );
+
     case "dragAndDrop":
       return (
         <ActivityWrapper bgUrl={bgUrl} id={chapId}>
           <DragDropAct data={payload} />
+        </ActivityWrapper>
+      );
+    case "clickAndDrag":
+      return (
+        <ActivityWrapper bgUrl={bgUrl} id={chapId}>
+          <ClickAndDragAct data={payload} />
         </ActivityWrapper>
       );
     case "match": {
@@ -1787,4 +1792,9 @@ function ActivityWrapper({ children, bgUrl, id }) {
       </div>
     );
   }
+  return (
+    <div style={containerStyle}>
+      <div style={{ width: "100%", height: "100%" }}>{children}</div>
+    </div>
+  );
 }

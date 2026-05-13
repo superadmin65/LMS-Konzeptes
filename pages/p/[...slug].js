@@ -134,39 +134,53 @@ export default function PlaylistPage(props) {
 export const loadPlaylist = async (id) => {
   try {
     if (!isNaN(id)) {
-      const response = await apiService.getActivityData(id);
+      // 1. Prepare the filtered request parameters
+      const params = {
+        id: id,
+        grade: localStorage.getItem("grade"),
+        language: localStorage.getItem("language"),
+        curriculum: localStorage.getItem("curriculum"),
+      };
+
+      // 2. Pass the params object (instead of just the id)
+      const response = await apiService.getActivityData(params);
 
       let json = response.data;
+
+      // Standardizing the response handling
       if (typeof json === "string") {
         try {
           json = JSON.parse(json);
         } catch (e) {
-          throw new Error("Invalid JSON");
+          throw new Error("Invalid JSON response from server");
         }
       }
 
-      if (json && (json.id || json.list)) return json;
+      // Handle ORDS nesting: items[0].list
       if (json && json.items && json.items.length > 0) {
         const item = json.items[0];
-        if (item.data && typeof item.data === "string")
-          return JSON.parse(item.data);
-        if (item.list && typeof item.list === "string")
+
+        // If the list is a stringified JSON, parse it
+        if (item.list && typeof item.list === "string") {
           return JSON.parse(item.list);
+        }
+
+        // If it's already an object, return it (minus the metadata links)
         const cleanItem = { ...item };
         delete cleanItem.links;
         return cleanItem;
       }
-      throw new Error("API returned empty items");
+
+      if (json && (json.id || json.list)) return json;
+
+      throw new Error("No activities found for your grade/profile");
     }
 
+    // ... (Keep your existing static file fallback logic below) ...
     const getBasePath = () => {
       if (typeof window === "undefined") return "";
-      if (window.__NEXT_DATA__?.basePath) return window.__NEXT_DATA__.basePath;
-      if (window.location?.pathname) {
-        const parts = window.location.pathname.split("/");
-        if (parts.length > 1 && parts[1] === "lms-system") return "/lms-system";
-      }
-      return "";
+      const path = window.location?.pathname || "";
+      return path.includes("/lms-system") ? "/lms-system" : "";
     };
 
     const basePath = getBasePath();
@@ -174,6 +188,54 @@ export const loadPlaylist = async (id) => {
     if (!res.ok) throw new Error("JSON file not found");
     return await res.json();
   } catch (e) {
+    console.error("Playlist Loading Error:", e);
     throw e;
   }
 };
+
+// export const loadPlaylist = async (id) => {
+//   try {
+//     if (!isNaN(id)) {
+//       const response = await apiService.getActivityData(id);
+
+//       let json = response.data;
+//       if (typeof json === "string") {
+//         try {
+//           json = JSON.parse(json);
+//         } catch (e) {
+//           throw new Error("Invalid JSON");
+//         }
+//       }
+
+//       if (json && (json.id || json.list)) return json;
+//       if (json && json.items && json.items.length > 0) {
+//         const item = json.items[0];
+//         if (item.data && typeof item.data === "string")
+//           return JSON.parse(item.data);
+//         if (item.list && typeof item.list === "string")
+//           return JSON.parse(item.list);
+//         const cleanItem = { ...item };
+//         delete cleanItem.links;
+//         return cleanItem;
+//       }
+//       throw new Error("API returned empty items");
+//     }
+
+//     const getBasePath = () => {
+//       if (typeof window === "undefined") return "";
+//       if (window.__NEXT_DATA__?.basePath) return window.__NEXT_DATA__.basePath;
+//       if (window.location?.pathname) {
+//         const parts = window.location.pathname.split("/");
+//         if (parts.length > 1 && parts[1] === "lms-system") return "/lms-system";
+//       }
+//       return "";
+//     };
+
+//     const basePath = getBasePath();
+//     const res = await fetch(`${basePath}/json/${id}.pschool`);
+//     if (!res.ok) throw new Error("JSON file not found");
+//     return await res.json();
+//   } catch (e) {
+//     throw e;
+//   }
+// };

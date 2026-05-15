@@ -1,138 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap');
+
+/* ── Page wrapper ── */
 .wrapper {
   width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+  min-height: calc(100vh - 65px);
+  background: #f2f5ef;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
   overflow-y: auto;
 }
 
+/* ── Content container ── */
 .container {
-  width: 85%;
-  max-width: 800px;
-  height: 96%;
-  margin: 15px auto;
-  padding: 30px;
-  border-radius: 15px;
-  background-color: transparent;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+  color: #1a2518;
 }
 
 .main {
-  border-radius: 4px;
-  padding: 10px 10px;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
 }
 
+/* ── Title card ── */
 .hindiTitle {
-  font-size: 22px;
-  margin-bottom: 24px;
-  font-weight: 600;
-  text-align: center;
+  background: #fff;
+  border: 1px solid #dde6d8;
+  border-radius: 16px;
+  padding: 20px 26px;
+  box-shadow: 0 2px 8px rgba(30,70,25,0.08);
+  font-family: 'Nunito', 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #1a2518;
   white-space: pre-line;
+  text-align: left;
+  animation: fadeUp 0.35s ease both;
 }
 
+/* ── Sentence / word display card ── */
 .sentenceDisplay {
+  background: #fff;
+  border: 1px solid #dde6d8;
+  border-radius: 16px;
+  padding: 28px 26px;
+  box-shadow: 0 4px 20px rgba(30,70,25,0.12);
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 12px;
   justify-content: center;
-  margin: 40px 0;
+  animation: fadeUp 0.35s 0.05s ease both;
 }
 
+/* ── Clickable word ── */
 .word {
-  font-size: 24px;
-  padding: 8px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 10px 18px;
   cursor: pointer;
-  border-radius: 8px;
-  background: white;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  background: #f2f5ef;
+  border: 2px solid #dde6d8;
+  color: #1a2518;
+  transition: all 0.18s;
+  box-shadow: 0 2px 6px rgba(30,70,25,0.06);
   position: relative;
 }
 
 .word:hover:not(.highlightCorrect):not(.highlightWrong) {
-  background: #0b8a1c;
-  color: white;
+  background: #ccf0ea;
+  border-color: #0d8a78;
+  color: #0d8a78;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13,138,120,0.18);
 }
 
+/* ── Pre-selection state ── */
+.selectedWord {
+  background: #ccf0ea !important;
+  border-color: #0d8a78 !important;
+  color: #0d8a78 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13,138,120,0.18) !important;
+}
+
+/* ── Correct answer highlight ── */
 .highlightCorrect {
-  background: #2ecc71 !important;
-  color: white !important;
-  font-weight: bold;
+  background: #d4edda !important;
+  border-color: #2e7d45 !important;
+  color: #2e7d45 !important;
+  font-weight: 800 !important;
+  animation: popIn 0.3s ease;
 }
 
+/* ── Wrong answer highlight ── */
 .highlightWrong {
-  background: #e74c3c !important;
-  color: white !important;
+  background: #fde4ea !important;
+  border-color: #c0394f !important;
+  color: #c0394f !important;
+  animation: shakeLeft 0.45s ease;
 }
 
 .iconMark {
-  margin-left: 8px;
+  margin-left: 6px;
   font-weight: 900;
 }
 
+/* ── Footer / action bar ── */
 .footer {
-  position: sticky;
-  bottom: 0;
+  background: #fff;
+  border: 1px solid #dde6d8;
+  border-radius: 16px;
+  padding: 16px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: auto;
+  box-shadow: 0 2px 8px rgba(30,70,25,0.08);
+  animation: fadeUp 0.35s 0.1s ease both;
 }
 
+/* ── Progress / score ── */
 .progress {
-  color: #666;
-  font-weight: 600;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #7a9872;
 }
 
-.score{
-   color: #555;
-  background: #ffffffe6;
-  border: 1px solid #0000001a;
-  border-radius: 4px;
-  padding: 0 15px;
-  font-size: 1rem;
-  font-weight: bold;
-  box-shadow: 1px 1px 3px #0000001a;
-}
-.nextBtn {
-  background: #0b8a1c;
-  color: white;
-  padding: 0 24px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-weight: bold;
+.score {
+  font-family: 'Nunito', sans-serif;
   font-size: 15px;
-  height: 40px;
-  min-width: 100px;
+  font-weight: 800;
+  color: #2e7d45;
+}
+
+/* ── Next button ── */
+.nextBtn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  line-height: 1;
+  gap: 7px;
+  padding: 11px 22px;
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  background: #0d8a78;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(13,138,120,0.3);
 }
 
-.nextBtn:hover {
-  opacity: 0.9;
+.nextBtn:hover:not(:disabled) { background: #0a7265; transform: translateY(-1px); }
+.nextBtn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.nextBtn:disabled{
-  opacity: 0.6;
-  cursor: not-allowed;
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0.7; }
+  to   { transform: scale(1); opacity: 1; }
 }
 
-.selectedWord {
-  background: #d6eaf8; /* light blue */
-  color: #0b8a1c;
-  font-weight: 600;
-  transform: scale(1.05);
+@keyframes shakeLeft {
+  0%, 100% { transform: translateX(0); }
+  25%, 75%  { transform: translateX(-5px); }
+  50%       { transform: translateX(5px); }
+}
+
+/* ── Tablet ── */
+@media (max-width: 700px) {
+  .container { padding: 20px 20px 32px; }
+  .word { font-size: 19px; padding: 9px 16px; }
+  .sentenceDisplay { gap: 10px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 500px) {
+  .container { padding: 14px 14px 28px; }
+  .hindiTitle { font-size: 17px; padding: 16px 18px; }
+  .sentenceDisplay { padding: 20px 16px; gap: 8px; }
+  .word { font-size: 17px; padding: 8px 14px; }
+  .footer { padding: 14px 16px; }
+  .nextBtn { padding: 10px 16px; font-size: 13px; }
+  .score { font-size: 13px; }
 }

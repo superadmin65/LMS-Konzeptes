@@ -56,8 +56,7 @@ export default function Profile() {
 
   const [avatar, setAvatar] = useState(null);
   const [showToast, setShowToast] = useState(false);
-  const [showLangDropdown, setShowLangDropdown] = useState(false);
-  const dropdownRef = useRef(null);
+  
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -99,15 +98,8 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setShowLangDropdown(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  
+    
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -362,7 +354,7 @@ export default function Profile() {
                 </div>
                 <div className="pf-col-12 profile-field-wrap">
                   <label>Email Address</label>
-                  <input name="email" value={form.email} placeholder="Email" readOnly />
+                  <input value={form.email} readOnly />
                 </div>
               </div>
             </section>
@@ -378,63 +370,19 @@ export default function Profile() {
               <div className="profile-fields">
                 <div className="pf-col-4 profile-field-wrap">
                   <label>Grade</label>
-                  <select name="grade" value={form.grade} onChange={handleChange}>
-                    <option value="">Select Grade</option>
-                    <option>Primary 1</option>
-                    <option>Primary 2</option>
-                    <option>Primary 3</option>
-                    <option>Primary 4</option>
-                    <option>Primary 5</option>
-                    <option>Primary 6 (PSLE)</option>
-                    <option>Secondary 1</option>
-                    <option>Secondary 2</option>
-                    <option>Secondary 3</option>
-                    <option>Secondary 4 (O Level)</option>
-                    <option>A Level</option>
-                  </select>
+                  <input value={form.grade} readOnly />
                 </div>
                 <div className="pf-col-4 profile-field-wrap">
                   <label>Board</label>
-                  <select name="curriculum" value={form.curriculum} onChange={handleChange}>
-                    <option value="">Select Curriculum</option>
-                    <option value="MOE">MOE</option>
-                    <option value="IGCSE">IGCSE</option>
-                    <option value="IB">IB</option>
-                    <option value="CBSE">CBSE</option>
-                  </select>
+                  <input value={form.curriculum} readOnly />
                 </div>
                 <div className="pf-col-4 profile-field-wrap">
                   <label>Language</label>
-                  <div className="profile-lang-wrap" ref={dropdownRef}>
-                    <div
-                      className="profile-lang-box"
-                      onClick={() => setShowLangDropdown(!showLangDropdown)}
-                    >
-                      {form.language.length > 0 ? form.language.join(", ") : "Select Language"}
-                    </div>
-                    {showLangDropdown && (
-                      <div className="profile-lang-dropdown">
-                        {["Hindi", "French", "German"].map((lang) => (
-                          <label key={lang} className="profile-lang-item">
-                            <input
-                              type="checkbox"
-                              checked={form.language.includes(lang)}
-                              onChange={() => toggleLanguage(lang)}
-                            />
-                            {lang}
-                          </label>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                 <input value={form.language.join(", ")} readOnly />
                 </div>
                 <div className="pf-col-12 profile-field-wrap">
                   <label>Package</label>
-                  <select name="package" value={form.package} onChange={handleChange}>
-                    <option value="">Select Package</option>
-                    <option value="free">Free</option>
-                    <option value="paid">Paid</option>
-                  </select>
+                  <input value={form.package} readOnly style={{ textTransform: "capitalize" }} />
                 </div>
               </div>
             </section>

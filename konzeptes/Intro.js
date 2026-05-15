@@ -2,403 +2,420 @@ import styled, { keyframes } from "styled-components";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import UserDropdown from "comps/UserDropdown";
+import { useEffect, useState } from "react";
+import { apiService } from "../utils/apiService";
 
-// Gentle floating animation for the mascot to make it feel alive
 const float = keyframes`
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0%   { transform: translateY(0px) rotate(0deg); }
+  50%  { transform: translateY(-14px) rotate(1.2deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+`;
+const fadeUp = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
+const slideIn = keyframes`
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+`;
+const popIn = keyframes`
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+`;
+const ringPulse = keyframes`
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%       { transform: scale(1.04); opacity: 0.8; }
 `;
 
+const FLAG_MAP = {
+  French: "🇫🇷", Spanish: "🇪🇸", German: "🇩🇪",
+  English: "🇬🇧", Portuguese: "🇵🇹", Italian: "🇮🇹",
+  Japanese: "🇯🇵", Chinese: "🇨🇳", Arabic: "🇸🇦", Dutch: "🇳🇱",
+};
+
 const Styled = styled.div`
-  background-color: #faf0f1;
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
   width: 100vw;
-  height: 100vh;
+  background: #eef3e8;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  margin: 0;
-  padding: 2rem;
-  box-sizing: border-box;
+  flex-direction: column;
+  overflow-x: hidden;
+  position: relative;
 
-  .wrap {
-    width: 100%;
-    max-width: 1100px;
-    min-height: auto;
-    height: auto;
-    background-color: white;
-    border-radius: 20px; /* Highly modern rounded corners */
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); /* Deep, soft shadow */
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    box-sizing: border-box;
-    overflow: hidden;
+  &::before {
+    content: "";
+    position: fixed;
+    top: -120px;
+    right: -120px;
+    width: 440px;
+    height: 440px;
+    border-radius: 50%;
+   background: radial-gradient(circle, rgba(51,105,30,0.08) 0%, transparent 72%);
+    pointer-events: none;
+    z-index: 0;
   }
 
-  /* --- 1. Top Bar --- */
-  .top-row {
+  .topbar {
+    width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    width: 100%;
-    z-index: 20;
+    justify-content: space-between;
+    padding: 20px 32px;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
   }
 
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
   .logo-img {
-    height: 70px;
-    object-fit: contain;
+    height: 52px;
+    display: block;
+    filter: drop-shadow(0 2px 6px rgba(27, 94, 32, 0.15));
   }
 
-  /* --- 2. Main Center Content --- */
-  .center-content {
+  .main {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-
-    gap: 1.5rem; /* Perfect spacing between text and mascot */
-  }
-
-  h1 {
-    font-family: var(--font1, "Arial", sans-serif);
-    font-weight: 900;
-    font-size: clamp(2.5rem, 4.5vw, 4rem);
-    color: #2b7d10;
-    line-height: 1.1;
-    margin: 0;
+    justify-content: center;
+    padding: 0 32px 48px 32px;
     position: relative;
-    z-index: 10;
-    text-align: center;
-    letter-spacing: -1px;
-    text-shadow: 2px 2px 0px rgba(43, 125, 16, 0.05);
-    background: none;
-    
+    z-index: 2;
+    gap: 32px;
   }
 
-  .tagline {
+  .left {
+    flex: 1;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    animation: ${fadeUp} 0.45s ease both;
+  }
+
+  .heading {
+    margin-bottom: 28px;
+  }
+  .heading h1 {
+    font-size: clamp(26px, 3.2vw, 40px);
+    font-weight: 800;
+    color: #111;
+    margin: 0 0 4px 0;
+    line-height: 1.12;
+    letter-spacing: -0.8px;
+  }
+  .heading h1 span {
+    color: #2e7d32;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-color: rgba(46, 125, 50, 0.45);
+    text-decoration-thickness: 3px;
+  }
+  .heading p {
+    font-size: 14px;
+    color: #6b7c6b;
+    font-weight: 400;
+    margin: 14px 0 0 0;
+    line-height: 1.65;
+    max-width: 380px;
+  }
+
+  .panels {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    animation: ${popIn} 0.4s 0.1s ease both;
+  }
+
+  .sel-panel {
+    background: #f1f8e9;
+border: 1px solid #dcedc8;
+    border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .sel-panel:hover {
+    border-color: #a5d6a7;
+    box-shadow: 0 4px 18px rgba(27, 94, 32, 0.10);
+  }
+
+  .panel-label {
+    font-size: 9px;
     font-weight: 700;
-    font-size: clamp(1.1rem, 2vw, 1.4rem);
-    font-family: var(--font2, "Arial", sans-serif);
-    color: #00b4d8;
-    margin: 0;
-    text-align: center;
-  }
-
-  .mascot {
-    height: 34vh;
-    max-height: 380px;
-    object-fit: contain;
-
-    filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.15));
-    animation: ${float} 4s ease-in-out infinite;
-    z-index: 10;
-  }
-
-  /* --- 3. Bottom Button Area --- */
-  .bottom-row {
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6fa85e;
+    margin-bottom: 10px;
     display: flex;
-    justify-content: flex-end; /* Keeps button on the right */
-    align-items: flex-end;
-    width: 100%;
-    z-index: 20;
-    padding-top: 15px;
+    align-items: center;
+    gap: 5px;
+  }
+  .panel-label::before {
+    content: "";
+    display: inline-block;
+    width: 12px; height: 2px;
+    background: #7aaa68;
+    border-radius: 2px;
   }
 
-  // .actionBtn {
-  //   font-size: 1.5rem;
-  //   font-family: var(--font1, sans-serif);
-  //   font-weight: bold;
-  //   background: linear-gradient(135deg, #00b4d8, #0077b6);
-  //   color: white;
-  //   padding: 15px 50px;
-  //   border-radius: 16px; /* Modern slightly-rounded square */
-  //   text-decoration: none;
-  //   box-shadow: 0 10px 25px rgba(0, 119, 182, 0.3);
-  //   transition: all 0.3s ease;
-  //   border: none;
-  //   cursor: pointer;
-  // }
+  .grade-row { display: flex; align-items: center; gap: 12px; }
+  .grade-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, #1b5e20, #43a047);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(27, 94, 32, 0.22);
+  }
+  .gi-sub {
+    display: block; font-size: 9px; font-weight: 700;
+    color: #6fa85e; letter-spacing: 0.8px; text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .gi-val {
+    display: block; font-size: 14px; font-weight: 700; color: #1a2e19;
+    line-height: 1.2;
+  }
 
-  // .actionBtn:hover {
-  //   transform: translateY(-5px);
-  //   box-shadow: 0 15px 30px rgba(0, 119, 182, 0.45);
-  //   background: linear-gradient(135deg, #00c4e8, #0096c7);
-  // }
+  .lang-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .lang-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 15px; border-radius: 999px;
+    font-weight: 600; font-size: 13px; cursor: pointer;
+    transition: all 0.2s ease; font-family: "Poppins", sans-serif;
+    background: #ffffff;
+color: #33691e;
+border: 1.5px solid #c8e6c9;
+  }
+  .lang-pill:hover {
+    background: #e8f5e2; border-color: #2e7d32;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(46, 125, 50, 0.14);
+  }
+  .lang-pill.active {
+   background: #33691e;
+    border-color: transparent; color: #fff;
+    box-shadow: 0 5px 14px rgba(27, 94, 32, 0.30);
+    transform: scale(1.04);
+  }
+  .pill-flag { font-size: 15px; }
+
+  .action-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    animation: ${fadeUp} 0.4s 0.2s ease both;
+  }
+
   .actionBtn {
-    font-size: 1.25rem; /* Reduced from 1.5rem for a cleaner look */
-    font-family: var(--font1, sans-serif);
-    font-weight: bold;
-    background: linear-gradient(135deg, #00b4d8, #0077b6);
-    color: white;
-    padding: 6px 20px; /* Tighter padding so it's less bulky */
-    border-radius: 12px; /* Slightly tighter rounded corners */
-    text-decoration: none;
-    box-shadow: 0 6px 18px rgba(0, 119, 182, 0.25); /* Softer, smaller shadow */
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #33691e;
+    color: #fff; font-weight: 700; font-size: 15px;
+    padding: 14px 36px; border-radius: 14px; text-decoration: none;
+    transition: all 0.25s ease; font-family: "Poppins", sans-serif;
+    letter-spacing: 0.2px;
+    box-shadow: 0 6px 22px rgba(27, 94, 32, 0.28);
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    flex-shrink: 0;
+    white-space: nowrap;
   }
-
   .actionBtn:hover {
-    transform: translateY(-3px); /* Slightly subtler lift */
-    box-shadow: 0 10px 22px rgba(0, 119, 182, 0.4);
-    background: linear-gradient(135deg, #00c4e8, #0096c7);
+    background: #1b5e20;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(27, 94, 32, 0.38);
   }
+  .btn-arrow { font-size: 18px; transition: transform 0.2s; }
+  .actionBtn:hover .btn-arrow { transform: translateX(5px); }
 
-  .language-row {
+  .right {
+    flex-shrink: 0;
     display: flex;
-    gap: 120px;
-    backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: ${slideIn} 0.5s 0.08s ease both;
+    transform: translateX(20px);
   }
 
-  .dropDown {
+  .mascot-circle {
+    width: clamp(260px, 32vw, 380px);
+    height: clamp(260px, 32vw, 380px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #dcedc8 0%, #c5e1a5 45%, #aed581 100%);
     display: flex;
-    padding: 0 10px 0 0;
-    justify-content: space-between;
-    cursor: pointer;
-    background: linear-gradient(135deg, #2b7d10, #89ca73);
-    border-radius: 12px; /* Slightly tighter rounded corners */
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-    width: 300px;
-    outline: none; /* 🔥 removes black outline */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  }
-  .languageDrop {
-    font-size: 1.1rem;
-    font-family: var(--font1, sans-serif);
-    font-weight: bold;
-    background: transparent;
-    color: white;
-    cursor: pointer;
-    width: 285px;
-    border: none;
-    outline: none; /* 🔥 removes black outline */
-  }
-
-  .dropDown:hover {
-    box-shadow: 0 10px 22px rgba(0, 182, 9, 0.25);
-    background: linear-gradient(135deg, #3eac19, #9ce783);
-  }
-
-  .languageDrop option {
-    color: #27740e;
-    background: white; /* important */
-    font-size: bold;
+    align-items: flex-end;
+    justify-content: center;
     overflow: hidden;
-    margin-right: 10px;
+    position: relative;
+    box-shadow:
+      0 20px 60px rgba(27, 94, 32, 0.16),
+      0 4px 16px rgba(27, 94, 32, 0.10);
   }
-  /* --- 4. Background Icons --- */
-  .bg-container {
+  .mascot-ring {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px dashed rgba(46, 125, 50, 0.20);
+    animation: ${ringPulse} 4s ease-in-out infinite;
     pointer-events: none;
-    z-index: 5;
+  }
+  .mascot-wrap {
+    animation: ${float} 4.6s ease-in-out infinite;
+    filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.18));
+    position: relative;
+    z-index: 2;
+    margin-bottom: -4px;
+  }
+  .mascot {
+    height: clamp(200px, 26vw, 310px);
+    display: block;
   }
 
-  .imgIcon {
+  .dot-dec {
     position: absolute;
-    opacity: 0.8; /* 👈 Brought the opacity back up so they are clearly visible! */
-    transform: scale(
-      0.9
-    ); /* Scales them down slightly so they don't look cramped */
+    border-radius: 50%;
+    background: #2e7d32;
+    opacity: var(--op);
+    width: var(--s); height: var(--s);
+  }
+
+  @media (max-width: 900px) {
+    .main { gap: 32px; padding: 0 32px 40px; }
+    .topbar { padding: 18px 32px; }
   }
 
   @media (max-width: 768px) {
-    .wrap {
-      padding: 20px;
-      border-radius: 12px;
-    }
-
-    .top-row {
-      justify-content: center;
-    }
-
-    .logo-img {
-      height: 50px;
-    }
-
-    .center-content {
-      gap: 1rem;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-    }
-
-    .tagline {
-      font-size: 0.8rem;
-    }
-
-    .language-row {
-      flex-direction: column; /* 🔥 stack dropdowns */
-      gap: 15px;
-      width: 100%;
+    .main {
+      flex-direction: column;
       align-items: center;
+      padding: 0 20px 40px;
+      gap: 32px;
     }
+    .left { max-width: 100%; align-items: flex-start; }
+    .right { order: -1; }
+    .mascot-circle { width: 220px; height: 220px; }
+    .mascot { height: 180px !important; }
+    .heading h1 { font-size: 32px; }
+    .topbar { padding: 16px 20px; }
+    .action-row { flex-wrap: wrap; }
+  }
 
-    .languageDrop {
-      width: 100%; /* 🔥 full width */
-      max-width: 280px;
-      font-size: 0.9rem;
-    }
-
-    .mascot {
-      height: 200px; /* 🔥 fixed smaller size */
-    }
-
-    .bottom-row {
-      justify-content: center; /* center button on mobile */
-    }
-
-    .actionBtn {
-      width: 100%;
-      max-width: 250px;
-      text-align: center;
-    }
+  @media (max-width: 480px) {
+    .heading h1 { font-size: 27px; }
+    .mascot-circle { width: 190px; height: 190px; }
+    .mascot { height: 155px !important; }
+    .lang-pill { padding: 7px 12px; font-size: 12px; }
+    .actionBtn { width: 100%; justify-content: center; }
+    .action-row { flex-direction: column; align-items: flex-start; width: 100%; }
   }
 `;
 
-var bgList = [
-  {
-    id: "icon1.png",
-    pos: [
-      { x: 450, y: 30 },
-      { x: 110, y: 220 },
-      { x: 920, y: 450 },
-    ],
-  },
-  {
-    id: "icon2.png",
-    pos: [
-      { x: 50, y: 100 },
-      { x: 950, y: 100 },
-      { x: 270, y: 320 },
-    ],
-  },
-  {
-    id: "icon3.png",
-    pos: [
-      { x: 700, y: 20 },
-      { x: 700, y: 350 },
-      { x: 40, y: 350 },
-    ],
-  },
-  {
-    id: "icon4.png",
-    pos: [
-      { x: 830, y: 250 },
-      { x: 20, y: 550 },
-    ],
-  },
-  {
-    id: "icon5.png",
-    pos: [
-      { x: 950, y: 310 },
-      { x: 170, y: 450 },
-    ],
-  },
-  {
-    id: "icon6.png",
-    pos: [
-      { x: 250, y: 80 },
-      { x: 750, y: 500 },
-      { x: 350, y: 500 },
-    ],
-  },
-];
-
-export default function Intro(props) {
+export default function Intro() {
   const router = useRouter();
   const basePath = router.basePath || "";
 
-  // Converts your original coordinates into responsive percentages
-  const getResponsivePos = (x, y) => {
-    return {
-      left: `${(x / 1100) * 100}%`,
-      top: `${(y / 700) * 100}%`,
+  const [user, setUser]             = useState({});
+  const [languages, setLanguages]   = useState([]);
+  const [activeLang, setActiveLang] = useState("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const user_id = localStorage.getItem("user_id");
+        if (!user_id) return;
+        const { data } = await apiService.getProfile({ user_id });
+        if (data.status === "success") {
+          setUser(data);
+          const langs = data.language ? data.language.split(",") : [];
+          setLanguages(langs);
+          setActiveLang(langs[0]?.trim() || "");
+        }
+      } catch (err) {
+        console.error("Profile error", err);
+      }
     };
-  };
+    fetchProfile();
+  }, []);
+
+  const grade = user.grade || "";
 
   return (
     <Styled>
-      <div className="wrap">
-        {/* User Dropdown moved back to its exact original place! */}
+      <div className="topbar">
+        <div className="logo-row">
+          <img className="logo-img" src={`${basePath}/img/konzeptes/logo.png`} alt="KONZEPTES" />
+        </div>
         <UserDropdown />
+      </div>
 
-        {/* Background Icons Layer */}
-        <div className="bg-container">
-          {bgList.map((item) => (
-            <div key={item.id}>
-              {item.pos.map((p) => (
-                <img
-                  key={`${item.id}-${p.x}-${p.y}`}
-                  className="imgIcon"
-                  src={`${basePath}/kon/${item.id}`}
-                  alt=""
-                  style={getResponsivePos(p.x, p.y)}
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-
-        {/* Top Header Layer */}
-        <div className="top-row">
-          <img
-            className="logo-img"
-            src={`${basePath}/img/konzeptes/logo.png`}
-            alt="logo"
-          />
-        </div>
-
-        {/* Center Content Layer */}
-        <div className="center-content">
-          <div>
-            <h1>WELCOME TO KONZEPTES!</h1>
-            <p className="tagline">
-              Explore our learning modules and improve your language skills.
-            </p>
+      <div className="main">
+        <div className="left">
+          <div className="heading">
+            <h1>
+              Welcome to<br />
+              <span>Konzeptes!</span>
+            </h1>
+            <p>Select your grade and language to begin your session.</p>
           </div>
-          <div className="language-row">
-            <div className="dropDown">
-              <select name="language" required className="languageDrop ">
-                <option value="">Select Grade</option>
-                <option value="free">Class I</option>
-                <option value="paid">Class II</option>
-                <option value="paid">Class III</option>
-              </select>
+
+          <div className="panels">
+            <div className="sel-panel">
+              <div className="panel-label">Your Grade</div>
+              <div className="grade-row">
+                <div className="grade-icon">🎓</div>
+                <div>
+                  <span className="gi-sub">Enrolled as</span>
+                  <span className="gi-val">{grade || "No Grade Selected"}</span>
+                </div>
+              </div>
             </div>
-            <div className="dropDown">
-              <select name="language" required className="languageDrop ">
-                <option value="">Select Language </option>
-                <option value="free">Hindi</option>
-                {/* <option value="paid">French</option>
-                <option value="paid">German</option> */}
-              </select>
+
+            <div className="sel-panel">
+              <div className="panel-label">Learning Language</div>
+              <div className="lang-pills">
+                {languages.length > 0 ? (
+                  languages.map((lang) => {
+                    const trimmed = lang.trim();
+                    return (
+                      <button
+                        key={trimmed}
+                        className={`lang-pill${activeLang === trimmed ? " active" : ""}`}
+                        onClick={() => setActiveLang(trimmed)}
+                      >
+                        <span className="pill-flag">{FLAG_MAP[trimmed] ?? "🌐"}</span>
+                        {trimmed}
+                      </button>
+                    );
+                  })
+                ) : (
+                  <button className="lang-pill" disabled>🌐 No Language</button>
+                )}
+              </div>
             </div>
           </div>
 
-          <img
-            className="mascot"
-            src={`${basePath}/img/konzeptes/kea.png`}
-            alt="mascot"
-          />
+          <div className="action-row">
+            <Link className="actionBtn" href="/home">
+              Let&apos;s Go <span className="btn-arrow">→</span>
+            </Link>
+          </div>
         </div>
 
-        {/* Bottom Button Layer */}
-        <div className="bottom-row">
-          <Link className="actionBtn" href="/home">
-            Let&apos;s Go
-          </Link>
+        <div className="right">
+          <div className="mascot-circle">
+            <div className="mascot-ring" />
+            <div className="dot-dec" style={{ "--s": "8px", "--op": 0.18, top: "14%", left: "10%" }} />
+            <div className="dot-dec" style={{ "--s": "5px", "--op": 0.14, top: "22%", right: "12%" }} />
+            <div className="dot-dec" style={{ "--s": "6px", "--op": 0.12, bottom: "18%", left: "8%" }} />
+            <div className="mascot-wrap">
+              <img className="mascot" src={`${basePath}/img/konzeptes/kea.png`} alt="mascot" />
+            </div>
+          </div>
         </div>
       </div>
     </Styled>

@@ -32,6 +32,8 @@ import DragAndDropSection from "./DragAndDropSection";
 import InformationProcessingSection from "./InformationProcessingSection";
 import VisualInfoProcessingSection from "./VisualInfoProcessingSection";
 import ClickAndDragSection from "./ClickAndDragSection";
+import SpeakingCardsSection from "./SpeakingCardsSection";
+import JumbledWordsSection from "./JumbledWordsSection";
 
 // HELPERS
 import { get, post } from "../../helpers/api_helper";
@@ -193,6 +195,21 @@ function InvoicesDetail() {
       groupData: [{ name: "", text: "" }],
       puzzlePairs: [{ base: "", right: "", wrong: "" }],
       dragDropItems: [{ src: "", word: "" }],
+      // -- SPEAKING CARD SPECIFIC --
+      cards: [
+        {
+          text: "",
+          audio: "",
+          image: "",
+          audioPreview: "",
+          imagePreview: "",
+        },
+      ],
+      jumbledQuestions: [
+        {
+          text: "",
+        },
+      ],
     },
 
     onSubmit: async (values) => {
@@ -672,6 +689,61 @@ function InvoicesDetail() {
             };
             break;
           }
+          case "speakingcards": {
+            console.log("Before filtering:", values.cards);
+            const filteredCards = values.cards
+              .filter((card) => card.text?.trim() || card.image || card.audio)
+              .map((card) => ({
+                text: card.text?.trim() || "",
+                audio: card.audio || "",
+                image: card.image || "",
+              }));
+            console.log("After filtering:", filteredCards);
+
+            apiPayload = {
+              ...basePayload,
+              activity_id: isEdit ? values.id : null,
+              card_id: Number(values.card_id),
+              label: values.label,
+              type: "speakingCards",
+              btn_label: "Speaking Cards",
+
+              data_json: JSON.stringify({
+                title: values.title,
+                cards: filteredCards,
+              }),
+            };
+
+            break;
+          }
+
+          case "jumbledwords": {
+            const filteredQuestions = values.jumbledQuestions.filter((q) =>
+              q.text?.trim(),
+            );
+
+            apiPayload = {
+              ...basePayload,
+
+              activity_id: isEdit ? values.id : null,
+
+              card_id: Number(values.card_id),
+
+              label: values.label,
+
+              type: "jumbledWords",
+
+              btn_label: "Jumbled Words",
+
+              data_json: JSON.stringify({
+                title: values.title,
+
+                questions: filteredQuestions,
+              }),
+            };
+
+            break;
+          }
 
           default:
             Swal.fire("Error", "Invalid activity type", "error");
@@ -723,6 +795,10 @@ function InvoicesDetail() {
               : "visual_audio";
         } else if (dbType === "match") {
           activityType = "matchpair";
+        } else if (dbType === "speakingCards") {
+          activityType = "speakingcards";
+        } else if (dbType === "jumbledWords") {
+          activityType = "jumbledwords";
         }
 
         let recMatch = [{ text: "", answer: "" }];
@@ -746,6 +822,32 @@ function InvoicesDetail() {
         let recDragDropItems = [{ src: "", word: "" }];
         let recWordList = [""];
 
+        let recSpeakingCards = [
+          {
+            image: "",
+            text: "",
+          },
+        ];
+        let recJumbledQuestions = [
+          {
+            text: "",
+          },
+        ];
+        if (parsedData && activityType === "speakingcards") {
+          recSpeakingCards = parsedData.cards || [
+            {
+              image: "",
+              text: "",
+            },
+          ];
+        }
+        if (parsedData && activityType === "jumbledwords") {
+          recJumbledQuestions = parsedData.questions || [
+            {
+              text: "",
+            },
+          ];
+        }
         if (parsedData.text && activityType === "match") {
           const lines = parsedData.text
             .split("\n")
@@ -997,7 +1099,8 @@ function InvoicesDetail() {
           puzzlePairs: recPuzzlePairs,
           dragDropItems: recDragDropItems,
           wordList: recWordList,
-
+          speakingCards: recSpeakingCards,
+          jumbledQuestions: recJumbledQuestions,
           generatedTable: Array.isArray(parsedData.table)
             ? parsedData.table
             : [],
@@ -1197,6 +1300,10 @@ function InvoicesDetail() {
                     <option value="completepuzzle">Complete Puzzle</option>
                     <option value="draganddrop">Drag and Drop (image)</option>
                     <option value="clickanddrag">Vocabulary Building</option>
+                    <option value="speakingcards">Speaking Cards</option>
+                    <option value="jumbledwords">
+                      Jumbled Words / Sentence
+                    </option>
                   </Input>
                 </Col>
                 <Col md={3}>
@@ -1386,7 +1493,12 @@ function InvoicesDetail() {
                   isViewOnly={isViewOnly}
                 />
               )}
-
+              {validation.values.type === "speakingcards" && (
+                <SpeakingCardsSection validation={validation} />
+              )}
+              {validation.values.type === "jumbledwords" && (
+                <JumbledWordsSection validation={validation} />
+              )}
               {!validation.values.type && (
                 <div className="text-center p-5 border rounded bg-light text-muted">
                   Please select an <strong>Activity Type</strong> to start
